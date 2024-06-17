@@ -12,12 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import br.com.fiap.monitoramentodetemperatura.screens.CadastrarScreen
-import br.com.fiap.monitoramentodetemperatura.screens.HistoricoScreen
-import br.com.fiap.monitoramentodetemperatura.screens.LoginScreen
-import br.com.fiap.monitoramentodetemperatura.screens.MenuScreen
-import br.com.fiap.monitoramentodetemperatura.screens.EmailScreen
-import br.com.fiap.monitoramentodetemperatura.screens.NovoEmailScreen
+import br.com.fiap.monitoramentodetemperatura.screens.*
 import br.com.fiap.monitoramentodetemperatura.ui.theme.MonitoramentoDeTemperaturaTheme
 
 class MainActivity : ComponentActivity() {
@@ -32,8 +27,7 @@ class MainActivity : ComponentActivity() {
                 ) {
 
                     val controleGeral = rememberNavController()
-                    NavHost(navController = controleGeral, startDestination = "login")
-                    {
+                    NavHost(navController = controleGeral, startDestination = "login") {
                         composable(route = "login") {
                             LoginScreen(controleGeral)
                         }
@@ -43,36 +37,47 @@ class MainActivity : ComponentActivity() {
                         composable(route = "historico") {
                             HistoricoScreen(controleGeral)
                         }
-                        composable(route = "Emails") {
+                        composable(route = "Categorias") {
+                            CategorizationScreen(controleGeral)
+                        }
+                        composable(route = "Todos") {
                             EmailScreen(controleGeral)
                         }
-                        composable(route="cadastre-se"){
-
-                            CadastrarScreen(
-                                controleGeral
-                            )
+                        composable(route = "Social") {
+                            EmailScreen2(controleGeral)
                         }
-
-                        composable(route= "novoEmail"){
+                        composable(route = "Trabalho") {
+                            EmailScreen1(controleGeral)
+                        }
+                        composable(route = "Bancos") {
+                            EmailScreen3(controleGeral)
+                        }
+                        composable(route = "Vagas_emp") {
+                            EmailScreen4(controleGeral)
+                        }
+                        composable(route = "cadastre-se") {
+                            CadastrarScreen(controleGeral)
+                        }
+                        composable(route = "novoEmail") {
                             NovoEmailScreen(controleGeral)
                         }
-
+                        composable(route = "emailRecebido") {
+                            EmailRecebidoScreen(controleGeral)
+                        }
+                        composable(route = "agendar_evento") {
+                            AgendarEventoScreen(controleGeral)
+                        }
                     }
-
-
-
                 }
             }
         }
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     MonitoramentoDeTemperaturaTheme {
-
 
     }
 }
