@@ -1,4 +1,4 @@
-package br.com.fiap.monitoramentodetemperatura.screens
+package br.com.fiap.locaweb.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -33,6 +33,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -43,7 +44,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import br.com.fiap.monitoramentodetemperatura.R
+import br.com.fiap.locaweb.R
+import br.com.fiap.locaweb.database.repository.UsuarioRepository
+import br.com.fiap.locaweb.model.UsuarioModel
 
 /**
  * Tela de cadastro com campos para nome, e-mail, senha e confirmação de senha.
@@ -79,6 +82,9 @@ fun CadastrarScreen(
     val lineColorConfirmar = if (isFocusedConfirmar) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
     val lineColorEmailCadastro = if (isFocusedEmailCadastro) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
 
+    //instancia repository
+    val context = LocalContext.current
+    val usuarioRepository = UsuarioRepository(context)
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -343,6 +349,12 @@ fun CadastrarScreen(
                                     senhaDiferente = true
                                 }
                                 else -> {
+                                    val usuario = UsuarioModel(
+                                        nome = nome,
+                                        email = emailCadastro,
+                                        senha = senha,
+                                    )
+                                    usuarioRepository.salvar(usuario = usuario)
                                     controleGeral.navigate("menu")
                                 }
                             }

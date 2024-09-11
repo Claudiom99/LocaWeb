@@ -1,4 +1,4 @@
-package br.com.fiap.monitoramentodetemperatura
+package br.com.fiap.locaweb
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -6,14 +6,12 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import br.com.fiap.monitoramentodetemperatura.screens.*
-import br.com.fiap.monitoramentodetemperatura.ui.theme.MonitoramentoDeTemperaturaTheme
+import br.com.fiap.locaweb.screens.*
+import br.com.fiap.locaweb.ui.theme.MonitoramentoDeTemperaturaTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,10 +72,10 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Preview(showBackground = true)
+/*@Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     MonitoramentoDeTemperaturaTheme {
 
     }
-}
+}*/

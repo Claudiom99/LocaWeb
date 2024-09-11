@@ -1,4 +1,4 @@
-package br.com.fiap.monitoramentodetemperatura.screens
+package br.com.fiap.locaweb.screens
 
 import android.content.Context
 import android.content.Intent
@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import br.com.fiap.monitoramentodetemperatura.R
+import br.com.fiap.locaweb.R
 import java.util.Calendar
 
 @Composable

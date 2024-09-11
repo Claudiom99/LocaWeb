@@ -1,4 +1,4 @@
-package br.com.fiap.monitoramentodetemperatura.screens
+package br.com.fiap.locaweb.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,10 +20,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import br.com.fiap.monitoramentodetemperatura.R
+import br.com.fiap.locaweb.R
 
 @Composable
-fun EmailScreen1(controleGeral: NavController) {
+fun EmailScreen(controleGeral: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -36,23 +36,23 @@ fun EmailScreen1(controleGeral: NavController) {
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             // Barra de pesquisa com a navegação de voltar implementada
-            SearchBar1(controleGeral)
+            SearchBar(controleGeral)
 
             // Título da lista de emails com ícone
-            TitleWithIcon1()
+            TitleWithIcon()
 
             // Lista de emails
-            EmailList1(controleGeral)
+            EmailList(controleGeral)
 
             // Botão "Novo"
-            NewEmailButton1(controleGeral)
+            NewEmailButton(controleGeral)
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchBar1(navController: NavController) {
+fun SearchBar(navController: NavController) {
     var searchText by remember { mutableStateOf("") }
 
     Box(
@@ -100,7 +100,7 @@ fun SearchBar1(navController: NavController) {
 }
 
 @Composable
-fun TitleWithIcon1() {
+fun TitleWithIcon() {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
@@ -109,13 +109,13 @@ fun TitleWithIcon1() {
             .padding(vertical = 16.dp)
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.twotone_work_outline_24),
+            painter = painterResource(id = R.drawable.baseline_inbox_24),
             contentDescription = "Ícone de Email",
             tint = Color.White,
             modifier = Modifier.size(24.dp)
         )
         Text(
-            text = "Trabalho",
+            text = "Todos",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White,
@@ -125,13 +125,13 @@ fun TitleWithIcon1() {
 }
 
 @Composable
-fun EmailList1(navController: NavController) {
+fun EmailList(navController: NavController) {
     val emails = listOf(
-        EmailItem1("David Moura", "Challenge 1º semestre", "Conteúdo do email"),
-        EmailItem1("Claúdio Maciel", "Challenge 1º semestre", "Conteúdo do email"),
-        EmailItem1("Rodrigo Inacio", "Challenge 1º semestre", "Conteúdo do email"),
-        EmailItem1("Thomas Jefferson", "Challenge 1º semestre", "Conteúdo do email"),
-        EmailItem1("5º Membro (Oculto)", "Challenge 1º semestre", "Conteúdo do email")
+        Email("David Moura", "Challenge 1º semestre", "Conteúdo do email"),
+        Email("Linkedin", "Recebeu Convite de...", "Conteúdo do email"),
+        Email("Banco do Brasil", "Extrato mensal", "Conteúdo do email"),
+        Email("Instagram", "Convite para Grupo", "Conteúdo do email"),
+        Email("Alerta de Vagas", "FIAP", "Conteúdo do email")
     )
 
     LazyColumn(
@@ -140,13 +140,25 @@ fun EmailList1(navController: NavController) {
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         items(emails) { email ->
-            EmailItemComponent(email, navController)
+            EmailItem(email, navController)
         }
     }
 }
 
 @Composable
-fun EmailItemComponent(email: EmailItem1, navController: NavController) {
+fun EmailItem(email: Email, navController: NavController) {
+    // Mapa que associa o nome do remetente ao ícone correspondente
+    val iconesPorRemetente = mapOf(
+        "David Moura" to R.drawable.twotone_work_outline_24,
+        "Linkedin" to R.drawable.twotone_group_24,
+        "Banco do Brasil" to R.drawable.baseline_account_balance_24,
+        "Instagram" to R.drawable.twotone_group_24,
+        "Alerta de Vagas" to R.drawable.baseline_notifications_none_24
+    )
+
+    // Obtém o ícone correspondente ao remetente ou usa um ícone padrão
+    val icone = iconesPorRemetente[email.name] ?: R.drawable.baseline_person_24
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -165,8 +177,8 @@ fun EmailItemComponent(email: EmailItem1, navController: NavController) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.twotone_work_outline_24),
-                contentDescription = "Remetente",
+                painter = painterResource(id = icone),
+                contentDescription = "Ícone do Remetente",
                 tint = Color.Black,
                 modifier = Modifier.padding(end = 16.dp)
             )
@@ -207,7 +219,7 @@ fun EmailItemComponent(email: EmailItem1, navController: NavController) {
 }
 
 @Composable
-fun NewEmailButton1(controleGeral: NavController) {
+fun NewEmailButton(controleGeral: NavController) {
     Button(
         onClick = { controleGeral.navigate("novoEmail") },
         colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.cinza)),
@@ -224,11 +236,11 @@ fun NewEmailButton1(controleGeral: NavController) {
     }
 }
 
-data class EmailItem1(val name: String, val subject: String, val content: String)
+data class Email(val name: String, val subject: String, val content: String)
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun EmailScreen1Preview() {
+fun EmailScreenPreview() {
     // Inicializando controleGeral com um objeto NavHostController
-    EmailScreen1(rememberNavController())
+    EmailScreen(rememberNavController())
 }

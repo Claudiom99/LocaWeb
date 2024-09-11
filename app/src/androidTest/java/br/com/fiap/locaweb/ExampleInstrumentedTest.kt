@@ -1,4 +1,4 @@
-package br.com.fiap.monitoramentodetemperatura
+package br.com.fiap.locaweb
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
