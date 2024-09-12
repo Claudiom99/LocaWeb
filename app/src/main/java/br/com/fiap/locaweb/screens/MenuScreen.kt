@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,9 +27,17 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.com.fiap.locaweb.R
+import br.com.fiap.locaweb.database.repository.UsuarioRepository
+import br.com.fiap.locaweb.model.UsuarioModel
+import com.google.gson.Gson
+
 
 @Composable
 fun MenuScreen(controleGeral: NavController) {
+    //instancia repository
+    val context = LocalContext.current
+    val usuarioRepository = UsuarioRepository(context)
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -91,6 +100,32 @@ fun MenuScreen(controleGeral: NavController) {
                 ) {
                     Text(
                         text = "Calendário",
+                        fontSize = 20.sp,
+                        color = Color.Black
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                var usuario : UsuarioModel
+                val gson = Gson()
+
+
+                Button(
+                    onClick = {
+                        usuario = usuarioRepository.buscarUsuarioPeloId(1)
+                        val userJson = gson.toJson(usuario)
+                        controleGeral.navigate("alterarCadastro/$userJson" )
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xffFF1E1E)),
+                    shape = RoundedCornerShape(20.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                        .padding(vertical = 1.dp)
+                ) {
+                    Text(
+                        text = "Alterar Cadastro",
                         fontSize = 20.sp,
                         color = Color.Black
                     )

@@ -24,4 +24,8 @@ class UsuarioRepository(context: Context) {
     fun buscarUsuarioPeloId(id: Long): UsuarioModel{
         return db.buscarPorID(id)
     }
+
+    fun buscarTodos(id: Long): UsuarioModel{
+        return db.buscarTodos()
+    }
 }

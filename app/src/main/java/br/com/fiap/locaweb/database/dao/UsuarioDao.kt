@@ -22,5 +22,8 @@ interface UsuarioDao {
     @Query("SELECT * FROM tbl_usuario WHERE id = :id")
     fun buscarPorID(id: Long): UsuarioModel
 
+    @Query("SELECT * FROM tbl_usuario")
+    fun buscarTodos(): UsuarioModel
+
 
 }

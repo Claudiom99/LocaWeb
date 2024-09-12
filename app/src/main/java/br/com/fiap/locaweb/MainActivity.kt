@@ -13,8 +13,13 @@ import androidx.navigation.compose.rememberNavController
 import br.com.fiap.locaweb.screens.*
 import br.com.fiap.locaweb.ui.theme.MonitoramentoDeTemperaturaTheme
 
+
 class MainActivity : ComponentActivity() {
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
+
         super.onCreate(savedInstanceState)
         setContent {
             MonitoramentoDeTemperaturaTheme {
@@ -31,9 +36,6 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(route = "menu") {
                             MenuScreen(controleGeral)
-                        }
-                        composable(route = "historico") {
-                            HistoricoScreen(controleGeral)
                         }
                         composable(route = "Categorias") {
                             CategorizationScreen(controleGeral)
@@ -64,6 +66,10 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(route = "agendar_evento") {
                             AgendarEventoScreen(controleGeral)
+                        }
+                        composable(route = "alterarCadastro/{usuario}"){
+                            backStackEntry ->
+                            AlteracaoScreen(controleGeral, backStackEntry)
                         }
                     }
                 }
