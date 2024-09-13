@@ -119,7 +119,7 @@ fun MenuScreen(controleGeral: NavController, backStackEntry: NavBackStackEntry) 
                 Button(
                     onClick = {
 
-                        val userJson = gson.toJson(usuario)
+                        val userJson = gson.toJson(usuarioRepository.buscarUsuarioPeloId(usuario.id))
                         controleGeral.navigate("alterarCadastro/$userJson" )
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xffFF1E1E)),

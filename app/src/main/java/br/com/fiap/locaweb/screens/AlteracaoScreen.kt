@@ -59,11 +59,22 @@ import com.google.gson.Gson
 fun AlteracaoScreen(
     controleGeral: NavController, backStackEntry: NavBackStackEntry
 ) {
+    //instancia repository
+    val context = LocalContext.current
+    val usuarioRepository = UsuarioRepository(context)
+
+    //pega o usuario em formato Json que foi passado como parametro na tela de login
+    val userJson = backStackEntry.arguments?.getString("usuario")
+
+    //Converte o usuario de Json para objeto novamente
+    val gson = Gson()
+    val usuario = gson.fromJson(userJson, UsuarioModel::class.java)
+
     // Estados para armazenar os valores dos campos de entrada
-    var nome by remember { mutableStateOf("") }
-    var senha by remember { mutableStateOf("") }
-    var confirmar by remember { mutableStateOf("") }
-    var emailCadastro by remember { mutableStateOf("") }
+    var nome by remember { mutableStateOf(usuario.nome) }
+    var senha by remember { mutableStateOf(usuario.senha) }
+    var confirmar by remember { mutableStateOf(usuario.senha) }
+    var emailCadastro by remember { mutableStateOf(usuario.email) }
 
     // Estado para controlar o foco dos campos de entrada
     var isFocusedNome by remember { mutableStateOf(false) }
@@ -84,16 +95,7 @@ fun AlteracaoScreen(
     val lineColorConfirmar = if (isFocusedConfirmar) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
     val lineColorEmailCadastro = if (isFocusedEmailCadastro) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
 
-    //instancia repository
-    val context = LocalContext.current
-    val usuarioRepository = UsuarioRepository(context)
 
-    //pega o usuario em formato Json que foi passado como parametro na tela de login
-    val userJson = backStackEntry.arguments?.getString("usuario")
-
-    //Converte o usuario de Json para objeto novamente
-    val gson = Gson()
-    val usuario = gson.fromJson(userJson, UsuarioModel::class.java)
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -134,7 +136,7 @@ fun AlteracaoScreen(
             ) {
                 // Campo de entrada para o nome
                 BasicTextField(
-                    value = usuario.nome,
+                    value = nome,
                     onValueChange = {
                         nome = it
                     },
@@ -179,7 +181,7 @@ fun AlteracaoScreen(
 
                 // Campo de entrada para o email
                 BasicTextField(
-                    value = usuario.email,
+                    value = emailCadastro,
                     onValueChange = {
                         emailCadastro = it
                     },
@@ -224,7 +226,7 @@ fun AlteracaoScreen(
 
                 // Campo de entrada para a senha
                 BasicTextField(
-                    value = usuario.senha,
+                    value = senha,
                     onValueChange = {
                         senha = it
                     },
@@ -270,7 +272,7 @@ fun AlteracaoScreen(
 
                 // Campo de entrada para confirmar a senha
                 BasicTextField(
-                    value = usuario.senha,
+                    value = confirmar,
                     onValueChange = {
                         confirmar = it
                     },
@@ -314,7 +316,7 @@ fun AlteracaoScreen(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // Botão de confirmação para criar a conta
+                // Botão de confirmação para alteração a conta
                 Column {
                     Button(
                         onClick = {
@@ -336,12 +338,12 @@ fun AlteracaoScreen(
                                     senhaDiferente = true
                                 }
                                 else -> {
-                                    val usuario = UsuarioModel(
-                                        nome = nome,
-                                        email = emailCadastro,
-                                        senha = senha,
-                                    )
-                                    usuarioRepository.salvar(usuario = usuario)
+                                    usuario.nome = nome
+                                    usuario.email = emailCadastro
+                                    usuario.senha = senha
+
+                                    usuarioRepository.atualizar(usuario)
+                                    controleGeral.navigate("menu/$userJson")
 
                                 }
                             }
