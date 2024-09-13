@@ -25,5 +25,7 @@ interface UsuarioDao {
     @Query("SELECT * FROM tbl_usuario")
     fun buscarTodos(): UsuarioModel
 
+    @Query("SELECT * FROM tbl_usuario WHERE email = :email and senha = :senha")
+    fun buscarPorEmailESenha(email : String, senha : String): UsuarioModel
 
 }

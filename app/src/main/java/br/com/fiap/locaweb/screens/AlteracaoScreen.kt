@@ -88,10 +88,13 @@ fun AlteracaoScreen(
     val context = LocalContext.current
     val usuarioRepository = UsuarioRepository(context)
 
+    //pega o usuario em formato Json que foi passado como parametro na tela de login
     val userJson = backStackEntry.arguments?.getString("usuario")
 
+    //Converte o usuario de Json para objeto novamente
     val gson = Gson()
     val usuario = gson.fromJson(userJson, UsuarioModel::class.java)
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -367,7 +370,8 @@ fun AlteracaoScreen(
                 ) {
                     Button(
                         onClick = {
-                            controleGeral.navigate("menu")
+                            val userJson = gson.toJson(usuario)
+                            controleGeral.navigate("menu/$userJson")
                         },
                         colors = ButtonDefaults.buttonColors(Color.Transparent),
                         shape = RoundedCornerShape(20.dp),

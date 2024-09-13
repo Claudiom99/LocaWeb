@@ -28,4 +28,8 @@ class UsuarioRepository(context: Context) {
     fun buscarTodos(id: Long): UsuarioModel{
         return db.buscarTodos()
     }
+
+    fun buscarPorEmailESenha(email: String, senha : String): UsuarioModel{
+        return db.buscarPorEmailESenha(email, senha)
+    }
 }
