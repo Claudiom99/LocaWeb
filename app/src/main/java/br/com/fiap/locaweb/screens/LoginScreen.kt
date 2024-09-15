@@ -65,7 +65,7 @@ fun LoginScreen(controleGeral: NavController) {
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
             Image(
-                painter = painterResource(id = R.drawable.locaweb_logo), // Substitua pelo ID do seu logo
+                painter = painterResource(id = R.drawable.locaweb_logo),
                 contentDescription = "Logo da LocaWeb",
                 modifier = Modifier
                     .size(200.dp) // Ajuste o tamanho conforme necessário

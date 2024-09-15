@@ -94,7 +94,7 @@ fun CategorizationScreen(navController: NavController) {
                     onClick = { navController.navigate("social") }
                 )
             }
-
+            Spacer(modifier = Modifier.height(20.dp))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -112,17 +112,22 @@ fun CategorizationScreen(navController: NavController) {
                     onClick = { navController.navigate("bancos") }
                 )
             }
-
+            Spacer(modifier = Modifier.height(20.dp))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
-                horizontalArrangement = Arrangement.Start
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 ItemDeCategoriaDeEmail(
                     icon = R.drawable.baseline_notifications_none_24,
                     texto = "Vagas emp",
                     onClick = { navController.navigate("vagas_emp") }
+                )
+                ItemDeCategoriaDeEmail(
+                    icon = R.drawable.spam_icon,
+                    texto = "Spam",
+                    onClick = { navController.navigate("spam_emails") }
                 )
             }
         }

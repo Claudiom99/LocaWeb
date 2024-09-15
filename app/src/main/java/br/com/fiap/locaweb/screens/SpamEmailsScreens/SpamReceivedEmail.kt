@@ -1,4 +1,4 @@
-package br.com.fiap.locaweb.screens
+package br.com.fiap.locaweb.screens.SpamEmailsScreens
 
 
 import androidx.compose.foundation.background
@@ -35,17 +35,19 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.com.fiap.locaweb.R
+import br.com.fiap.locaweb.emailsMock.emailSpam1
+import br.com.fiap.locaweb.methods.isSpam
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun EmailRecebidoScreenPreview() {
+fun SpamReceivedEmail() {
 
-    EmailRecebidoScreen(rememberNavController())
+    SpamReceivedEmail(rememberNavController())
 
 }
 
 @Composable
-fun EmailRecebidoScreen(controleGeral: NavController) {
+fun SpamReceivedEmail(controleGeral: NavController) {
 
 
     //val context = LocalContext.current
@@ -77,7 +79,7 @@ fun EmailRecebidoScreen(controleGeral: NavController) {
                 IconButton(
                     onClick = {
 
-                        controleGeral.navigate("Categorias")
+                        controleGeral.navigate("spam_emails")
                     },
                     modifier = Modifier.size(30.dp)
                 ) {
@@ -88,6 +90,24 @@ fun EmailRecebidoScreen(controleGeral: NavController) {
                         modifier = Modifier.size(30.dp),
 
                         )
+                }
+                Spacer(modifier = Modifier.height(15.dp))
+                if(isSpam(emailSpam1)){
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.spam_icon),
+                            contentDescription = "Ícone de alerta",
+                            tint = Color.Yellow,
+                            modifier = Modifier.size(40.dp),
+
+                            )
+                        Text(
+                            text = "Spam Alert",
+                            color = Color.Yellow
+                        )
+
+                    }
                 }
 
                 Button(
@@ -108,7 +128,7 @@ fun EmailRecebidoScreen(controleGeral: NavController) {
             Spacer(modifier = Modifier.height(20.dp))
 
             OutlinedTextField(
-                value = "email@exemplo.com",
+                value = emailSpam1.sender,
                 readOnly = true,
                 onValueChange = {},
                 modifier = Modifier.fillMaxWidth(),
@@ -142,7 +162,7 @@ fun EmailRecebidoScreen(controleGeral: NavController) {
             Spacer(modifier = Modifier.height(10.dp))
 
             OutlinedTextField(
-                value = "emaildestinatario@exemplo.com",
+                value = emailSpam1.receiver,
                 onValueChange = {},
                 readOnly = true,
                 modifier = Modifier.fillMaxWidth(),
@@ -175,7 +195,7 @@ fun EmailRecebidoScreen(controleGeral: NavController) {
             Spacer(modifier = Modifier.height(10.dp))
 
             OutlinedTextField(
-                value = "Esse é um titulo de exemplo.",
+                value = emailSpam1.title,
                 onValueChange = {},
                 readOnly = true,
                 modifier = Modifier.fillMaxWidth(),
@@ -209,9 +229,7 @@ fun EmailRecebidoScreen(controleGeral: NavController) {
             Spacer(modifier = Modifier.height(20.dp))
 
             OutlinedTextField(
-                value = "Conteudo de Email.\nEsse é um exemplo de texto onde deve ficar o conteúdo do email recebido.\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed convallis laoreet hendrerit. In vel faucibus elit. Sed commodo ante sed tortor fermentum tempus. Fusce ullamcorper scelerisque lectus, id semper quam sollicitudin in. Cras at blandit lacus, vel facilisis arcu. Sed quis gravida sem. Maecenas finibus, tortor in tristique volutpat, ligula urna semper nulla, et egestas sem metus at nibh. In a consectetur erat. Etiam convallis ullamcorper nunc. Quisque ornare nulla at pellentesque imperdiet.\n" +
-                        "\n" +
-                        "Nullam lectus dolor, tincidunt eu suscipit sed, faucibus sit amet est. Donec eu diam urna. Proin eu augue luctus, tempor lorem nec, ultricies risus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nullam luctus est in vehicula ultrices. Curabitur facilisis, elit in mollis vehicula, elit eros sagittis turpis, quis lobortis erat nibh cursus sapien.",
+                value = emailSpam1.emailContent,
                 onValueChange = {},
                 readOnly = true,
                 modifier = Modifier
@@ -223,7 +241,6 @@ fun EmailRecebidoScreen(controleGeral: NavController) {
                     unfocusedBorderColor = Color.LightGray,
                     unfocusedTextColor = Color.White,
                     focusedTextColor = Color.White
-
                 ),
                 placeholder = {
                     Text(text = "Conteúdo do E-mail")

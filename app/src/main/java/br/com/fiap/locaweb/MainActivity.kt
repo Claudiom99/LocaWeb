@@ -11,6 +11,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import br.com.fiap.locaweb.screens.*
+import br.com.fiap.locaweb.screens.SpamEmailsScreens.SpamReceivedEmail
+import br.com.fiap.locaweb.screens.SpamEmailsScreens.SpamReceivedEmail2
+import br.com.fiap.locaweb.screens.SpamEmailsScreens.SpamReceivedEmail3
+import br.com.fiap.locaweb.screens.SpamEmailsScreens.SpamReceivedEmail4
+import br.com.fiap.locaweb.screens.SpamEmailsScreens.SpamReceivedEmail5
 import br.com.fiap.locaweb.ui.theme.MonitoramentoDeTemperaturaTheme
 
 
@@ -56,6 +61,9 @@ class MainActivity : ComponentActivity() {
                         composable(route = "Vagas_emp") {
                             EmailScreen4(controleGeral)
                         }
+                        composable(route = "spam_emails") {
+                            EmailScreen6(controleGeral)
+                        }
                         composable(route = "cadastre-se") {
                             CadastrarScreen(controleGeral)
                         }
@@ -63,7 +71,22 @@ class MainActivity : ComponentActivity() {
                             NovoEmailScreen(controleGeral)
                         }
                         composable(route = "emailRecebido") {
-                            EmailRecebidoScreen(controleGeral)
+                            NotSpamReceivedEmail(controleGeral)
+                        }
+                        composable(route = "emailSpamRecebido") {
+                            SpamReceivedEmail(controleGeral)
+                        }
+                        composable(route = "emailSpamRecebido2") {
+                            SpamReceivedEmail2(controleGeral)
+                        }
+                        composable(route = "emailSpamRecebido3") {
+                            SpamReceivedEmail3(controleGeral)
+                        }
+                        composable(route = "emailSpamRecebido4") {
+                            SpamReceivedEmail4(controleGeral)
+                        }
+                        composable(route = "emailSpamRecebido5") {
+                            SpamReceivedEmail5(controleGeral)
                         }
                         composable(route = "agendar_evento") {
                             AgendarEventoScreen(controleGeral)

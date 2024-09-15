@@ -66,17 +66,20 @@ fun SearchBar2(navController: NavController) {
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.twotone_keyboard_return_24),
-                contentDescription = "Voltar",
-                tint = Color.White,
-                modifier = Modifier
-                    .padding(end = 8.dp)
-                    .clickable {
-                        // Navega de volta ao "menu" ou à tela anterior
-                        navController.popBackStack()
-                    }
-            )
+            IconButton(
+                onClick = {
+                    navController.navigate("Categorias")
+                },
+                modifier = Modifier.size(30.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.keyboard_return_24),
+                    contentDescription = "Ícone voltar",
+                    tint = Color.White,
+                    modifier = Modifier.size(30.dp),
+
+                    )
+            }
             TextField(
                 value = searchText,
                 onValueChange = { searchText = it },
