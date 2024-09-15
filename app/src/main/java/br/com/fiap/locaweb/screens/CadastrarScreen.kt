@@ -47,6 +47,7 @@ import androidx.navigation.compose.rememberNavController
 import br.com.fiap.locaweb.R
 import br.com.fiap.locaweb.database.repository.UsuarioRepository
 import br.com.fiap.locaweb.model.UsuarioModel
+import com.google.gson.Gson
 
 /**
  * Tela de cadastro com campos para nome, e-mail, senha e confirmação de senha.
@@ -354,8 +355,12 @@ fun CadastrarScreen(
                                         email = emailCadastro,
                                         senha = senha,
                                     )
+
                                     usuarioRepository.salvar(usuario = usuario)
-                                    controleGeral.navigate("menu")
+                                    val gson = Gson()
+
+                                    val userJson = gson.toJson(usuario)
+                                    controleGeral.navigate("menu/$userJson")
                                 }
                             }
                         },

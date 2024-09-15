@@ -39,8 +39,9 @@ class MainActivity : ComponentActivity() {
                         composable(route = "login") {
                             LoginScreen(controleGeral)
                         }
-                        composable(route = "menu") {
-                            MenuScreen(controleGeral)
+                        composable(route = "menu/{usuario}") {
+                            backStackEntry ->
+                            MenuScreen(controleGeral, backStackEntry)
                         }
                         composable(route = "Categorias") {
                             CategorizationScreen(controleGeral)

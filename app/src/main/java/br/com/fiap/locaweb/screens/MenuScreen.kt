@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.com.fiap.locaweb.R
@@ -35,11 +36,16 @@ import com.google.gson.Gson
 
 
 @Composable
-fun MenuScreen(controleGeral: NavController) {
+fun MenuScreen(controleGeral: NavController, backStackEntry: NavBackStackEntry) {
     //instancia repository
     val context = LocalContext.current
     val usuarioRepository = UsuarioRepository(context)
 
+
+    val userJson = backStackEntry.arguments?.getString("usuario")
+
+    val gson = Gson()
+    val usuario = gson.fromJson(userJson, UsuarioModel::class.java)
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -107,14 +113,12 @@ fun MenuScreen(controleGeral: NavController) {
                 }
                 Spacer(modifier = Modifier.height(20.dp))
 
-                var usuario: UsuarioModel
-                val gson = Gson()
-
                 Button(
                     onClick = {
-                        usuario = usuarioRepository.buscarUsuarioPeloId(1)
-                        val userJson = gson.toJson(usuario)
-                        controleGeral.navigate("alterarCadastro/$userJson")
+
+                        val userJson = gson.toJson(usuarioRepository.buscarUsuarioPeloId(usuario.id))
+                        controleGeral.navigate("alterarCadastro/$userJson" )
+
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xffFF1E1E)),
                     shape = RoundedCornerShape(20.dp),
@@ -153,8 +157,8 @@ fun MenuScreen(controleGeral: NavController) {
 }
 
 
-@Preview(showSystemUi = true, showBackground = true)
+/*@Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun MenuScreenPreview() {
     MenuScreen(rememberNavController())
-}
+}*/

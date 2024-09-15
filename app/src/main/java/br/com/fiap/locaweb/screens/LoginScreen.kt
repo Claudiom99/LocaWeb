@@ -15,6 +15,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
@@ -26,6 +27,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.com.fiap.locaweb.R
+import br.com.fiap.locaweb.database.repository.UsuarioRepository
+import br.com.fiap.locaweb.model.UsuarioModel
+import com.google.gson.Gson
 
 @Composable
 fun LoginScreen(controleGeral: NavController) {
@@ -33,12 +37,17 @@ fun LoginScreen(controleGeral: NavController) {
     var password by remember { mutableStateOf("") }
     var erroEmail by remember { mutableStateOf(false) }
     var erroPassword by remember { mutableStateOf(false) }
+    var loginNaoExiste by remember { mutableStateOf(false) }
     var isFocusedEmail by remember { mutableStateOf(false) }
     var isFocusedPassword by remember { mutableStateOf(false) }
 
     val textColor = Color.White  // Cor do texto
     val lineColor = if (isFocusedEmail) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
     val lineColor1 = if (isFocusedPassword) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
+
+    //instancia repository
+    val context = LocalContext.current
+    val usuarioRepository = UsuarioRepository(context)
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -132,6 +141,15 @@ fun LoginScreen(controleGeral: NavController) {
                         textAlign = TextAlign.Right
                     )
                 }
+                else if (loginNaoExiste) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = "Login não existe",
+                        fontSize = 14.sp,
+                        color = Color.Red,
+                        textAlign = TextAlign.Right
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -197,8 +215,20 @@ fun LoginScreen(controleGeral: NavController) {
                         textAlign = TextAlign.Right
                     )
                 }
+                else if (loginNaoExiste) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = "Login não existe",
+                        fontSize = 14.sp,
+                        color = Color.Red,
+                        textAlign = TextAlign.Right
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(32.dp))
+
+
+                val gson = Gson()
 
                 Column {
                     Button(
@@ -207,7 +237,18 @@ fun LoginScreen(controleGeral: NavController) {
                                 erroEmail = true
                                 erroPassword = true
                             } else {
-                                controleGeral.navigate("menu")
+
+                                val usuario : UsuarioModel = usuarioRepository.buscarPorEmailESenha(email, password)
+                                val userJson = gson.toJson(usuario)
+
+                                if(usuario == null){
+                                    loginNaoExiste = true
+                                }else if(usuario.email.equals(email) && usuario.senha.equals(password)){
+                                    controleGeral.navigate("menu/$userJson")
+                                } else {
+                                    loginNaoExiste = true
+                                }
+
                             }
                         },
                         colors = ButtonDefaults.buttonColors(Color(0xffFF1E1E)),

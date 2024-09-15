@@ -217,7 +217,7 @@ fun CategorizationScreenPreview() {
     val navController = rememberNavController()
     NavHost(navController, startDestination = "categorias") {
         composable("categorias") { CategorizationScreen(navController) }
-        composable("menu") { MenuScreen(navController) }
+        //composable("menu") { MenuScreen(navController) }
         composable("todos") { EmailScreen(navController) }
         composable("social") { EmailScreen2(navController) }
         composable("trabalho") { EmailScreen1(navController) }
