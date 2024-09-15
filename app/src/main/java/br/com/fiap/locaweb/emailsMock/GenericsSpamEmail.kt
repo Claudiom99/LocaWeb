@@ -19,7 +19,7 @@ val emailSpam1 = Email(
     Clique aqui: http://login-wsapp-hk.top/ para aproveitar a promoção exclusiva.
 
             Atenciosamente,
-    Equipe de Oportunidades""",
+    Equipe de Oportunidades""".trimIndent(),
     attachment = listOf(attachmentSpam1)
 )
 
@@ -39,7 +39,7 @@ Você foi sorteado na nossa loteria e ganhou um prêmio especial! Para reivindic
 Clique aqui para mais detalhes: https://m6247015k6e0q.wixsite.com/metamasksegnin 
 
 Atenciosamente,
-Equipe de Promoções""",
+Equipe de Promoções""".trimIndent(),
     attachment = listOf(attachmentSpam2)
 )
 
@@ -62,7 +62,7 @@ https://verifyiosapp.com/
 Por favor, não ignore este aviso.
 
 Atenciosamente,
-Suporte ao Cliente""",
+Suporte ao Cliente""".trimIndent(),
     attachment = listOf(attachmentSpam3)
 )
 
@@ -83,7 +83,7 @@ Baixe o anexo agora e comece já: trabalho_facil.exe
 
 Clique aqui para mais informações: https://currentlyupdate.wixsite.com/signin
 
-Não perca essa chance!""",
+Não perca essa chance!""".trimIndent() ,
     attachment = listOf(attachmentSpam4)
 )
 
@@ -103,6 +103,6 @@ Aproveite nossa promoção exclusiva! Descontos incríveis de até 50%! Compre a
 Clique no link e compre agora: https://superdupergraphics.com/.include.chk/licence.html?referCode=
 
 Atenciosamente,
-Equipe de Ofertas""",
+Equipe de Ofertas""".trimIndent(),
     attachment = listOf(attachmentSpam5)
 )
