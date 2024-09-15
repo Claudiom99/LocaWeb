@@ -5,11 +5,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -51,7 +53,8 @@ fun MenuScreen(controleGeral: NavController) {
             modifier = Modifier
                 .padding(32.dp)
                 .fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceEvenly
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 text = "MENU",
@@ -61,12 +64,11 @@ fun MenuScreen(controleGeral: NavController) {
                 modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
             )
 
-            Spacer(modifier = Modifier.height(1.dp))
-
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp)
+                    .padding(12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+
             ) {
                 Button(
                     onClick = {
@@ -85,8 +87,7 @@ fun MenuScreen(controleGeral: NavController) {
                         color = Color.Black
                     )
                 }
-
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(20.dp))
                 Button(
                     onClick = {
                         controleGeral.navigate("agendar_evento")
@@ -104,18 +105,16 @@ fun MenuScreen(controleGeral: NavController) {
                         color = Color.Black
                     )
                 }
+                Spacer(modifier = Modifier.height(20.dp))
 
-                Spacer(modifier = Modifier.height(10.dp))
-
-                var usuario : UsuarioModel
+                var usuario: UsuarioModel
                 val gson = Gson()
-
 
                 Button(
                     onClick = {
                         usuario = usuarioRepository.buscarUsuarioPeloId(1)
                         val userJson = gson.toJson(usuario)
-                        controleGeral.navigate("alterarCadastro/$userJson" )
+                        controleGeral.navigate("alterarCadastro/$userJson")
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xffFF1E1E)),
                     shape = RoundedCornerShape(20.dp),
@@ -130,33 +129,28 @@ fun MenuScreen(controleGeral: NavController) {
                         color = Color.Black
                     )
                 }
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                Button(
-                    onClick = {
-                        controleGeral.navigate("login")
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xffFF1E1E)),
-                    shape = RoundedCornerShape(20.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp)
-                        .padding(vertical = 1.dp)
-                ) {
-                    Text(
-                        text = "Sair",
-                        fontSize = 20.sp,
-                        color = Color.Black
-                    )
-                }
+            }
+            Button(
+                onClick = {
+                    controleGeral.navigate("login")
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xffFF1E1E)),
+                shape = RoundedCornerShape(20.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .padding(vertical = 1.dp)
+            ) {
+                Text(
+                    text = "Sair",
+                    fontSize = 20.sp,
+                    color = Color.Black
+                )
             }
 
-            Spacer(modifier = Modifier.height(220.dp))
-
-            }
         }
     }
+}
 
 
 @Preview(showSystemUi = true, showBackground = true)

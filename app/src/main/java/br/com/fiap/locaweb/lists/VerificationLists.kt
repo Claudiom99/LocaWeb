@@ -27,6 +27,12 @@ val suspiciousExtensions = listOf(
     ".exe", ".zip", ".rar", ".bat", ".cmd", ".js", ".jar", ".scr", ".msi", ".dll",
     ".vbs", ".pif", ".hta", ".com", ".bin", ".iso", ".7z", ".ps1", ".apk", ".deb"
 )
+val ContactsList = listOf(
+    "davidmoura@fiap.com",
+    "claudiomaciel@fiap.com",
+    "rodrigoinacio@fiap.com",
+    "thomasjefferson@fiap.com"
+)
 val suspiciousDomains = listOf(
     "http://login-wsapp-hk.top/",
     "https://homepage--coinbase-fec.webflow.io/",
@@ -475,10 +481,4 @@ val suspiciousDomains = listOf(
     "http://labanquepostale.jupiter-analytics.com/thierry--_--.barbier/brigitte.--_--boissel@/francoise--_--.mariani@/salvatore--_--.fazzalari/",
     "https://emailmarketing.locaweb.com.br/accounts/193979/messages/2/clicks/56538/2?envelope_id=2",
     "https://ns1.apple-wwdc-portal-online.com/"
-)
-val ContactsList = listOf(
-    "davidmoura@fiap.com",
-    "claudiomaciel@fiap.com",
-    "rodrigoinacio@fiap.com",
-    "thomasjefferson@fiap.com"
 )
