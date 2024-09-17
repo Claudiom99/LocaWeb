@@ -94,7 +94,15 @@ class MainActivity : ComponentActivity() {
                         composable(route = "alterarCadastro/{usuario}"){
                             backStackEntry ->
                             AlteracaoScreen(controleGeral, backStackEntry)
+
                         }
+                        composable(route = "emailRecebido/{emailSender}/{emailSubject}/{emailContent}") { backStackEntry ->
+                            val emailSender = backStackEntry.arguments?.getString("emailSender") ?: ""
+                            val emailSubject = backStackEntry.arguments?.getString("emailSubject") ?: ""
+                            val emailContent = backStackEntry.arguments?.getString("emailContent") ?: ""
+                            EmailRecebidoScreen(emailSender, emailSubject, emailContent)
+                        }
+
                     }
                 }
             }

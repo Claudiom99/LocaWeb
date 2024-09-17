@@ -35,7 +35,7 @@ fun EmailScreen(controleGeral: NavController) {
                 .padding(horizontal = 20.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // Barra de pesquisa com a navegação de voltar implementada
+            // Barra de pesquisa com a navegação de voltar
             SearchBar(controleGeral)
 
             // Título da lista de emails com ícone
@@ -54,12 +54,13 @@ fun EmailScreen(controleGeral: NavController) {
 @Composable
 fun SearchBar(navController: NavController) {
     var searchText by remember { mutableStateOf("") }
+    var isActive by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.DarkGray, shape = RoundedCornerShape(20.dp))
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(horizontal = 16.dp, vertical = 5.dp)
     ) {
         Row(
             modifier = Modifier
@@ -77,21 +78,24 @@ fun SearchBar(navController: NavController) {
                     contentDescription = "Ícone voltar",
                     tint = Color.White,
                     modifier = Modifier.size(30.dp),
-
-                    )
-            }
-            TextField(
-                value = searchText,
-                onValueChange = { searchText = it },
-                placeholder = { Text("Pesquisar emails", color = Color.Gray) },
-                modifier = Modifier.weight(1f),
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color.Transparent,
-                    cursorColor = Color.White,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
                 )
+            }
+
+            // SearchBar corrigida com parâmetros corretos
+            SearchBar(
+                query = searchText,
+                onQueryChange = { searchText = it },
+                onSearch = { /* Lógica de pesquisa */ },
+                active = isActive,
+                onActiveChange = { isActive = it },
+                placeholder = { Text("Pesquisar emails", color = Color.Gray) },
+                colors = SearchBarDefaults.colors(
+                    containerColor = Color.Transparent
+                ),
+                modifier = Modifier.weight(1f),
+                content = { /* pode ser deixado vazio ou adicionar ícones de sugestão de pesquisa */ }
             )
+
             Icon(
                 painter = painterResource(id = R.drawable.baseline_account_circle_24),
                 contentDescription = "Perfil",
@@ -159,7 +163,7 @@ fun EmailItem(email: Email, navController: NavController) {
         "Alerta de Vagas" to R.drawable.baseline_notifications_none_24
     )
 
-    // Obtém o ícone correspondente ao remetente ou usa um ícone padrão
+    //ícone correspondente ao remetente
     val icone = iconesPorRemetente[email.name] ?: R.drawable.baseline_person_24
 
     Card(
@@ -220,7 +224,23 @@ fun EmailItem(email: Email, navController: NavController) {
         }
     }
 }
-
+@Composable
+fun EmailItem1(email: Email, navController: NavController) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+            .clickable {
+                // Ao clicar, navega para a tela de detalhes do e-mail
+                navController.navigate("emailRecebido/${email.name}/${email.subject}/${email.content}")
+            },
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        // Conteúdo do item de e-mail
+            }
+}
 @Composable
 fun NewEmailButton(controleGeral: NavController) {
     Button(
@@ -244,6 +264,5 @@ data class Email(val name: String, val subject: String, val content: String)
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun EmailScreenPreview() {
-    // Inicializando controleGeral com um objeto NavHostController
     EmailScreen(rememberNavController())
 }
