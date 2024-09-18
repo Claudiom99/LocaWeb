@@ -7,27 +7,54 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import br.com.fiap.locaweb.R
+import br.com.fiap.locaweb.database.repository.UsuarioRepository
+import br.com.fiap.locaweb.model.UsuarioModel
+import com.google.gson.Gson
 import java.util.Calendar
 
 @Composable
-fun AgendarEventoScreen(navController: NavController) {
+fun AgendarEventoScreen(navController: NavController, backStackEntry: NavBackStackEntry) {
     val context = LocalContext.current
     var openCalendar by remember { mutableStateOf(false) }
+
+
+    val usuarioRepository = UsuarioRepository(context)
+
+
+    val userJson = backStackEntry.arguments?.getString("usuario")
+
+    val gson = Gson()
+    val usuario = gson.fromJson(userJson, UsuarioModel::class.java)
 
     if (openCalendar) {
         LaunchedEffect(Unit) {
@@ -80,7 +107,8 @@ fun AgendarEventoScreen(navController: NavController) {
                 .border(width = 2.dp, color = Color.LightGray, shape = RoundedCornerShape(32.dp))
                 .background(Color.Transparent, shape = RoundedCornerShape(32.dp))
                 .clickable {
-                    navController.navigate("menu") {
+                    val userJson = gson.toJson(usuario)
+                    navController.navigate("menu/$userJson") {
                         popUpTo("menu") { inclusive = true }
                     }
                 }
@@ -114,8 +142,8 @@ fun abrirCalendario(context: Context) {
     context.startActivity(intent)
 }
 
-@Preview(showSystemUi = true, showBackground = true)
+/*@Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun AgendarEventoScreenPreview() {
     AgendarEventoScreen(rememberNavController())
-}
+}*/

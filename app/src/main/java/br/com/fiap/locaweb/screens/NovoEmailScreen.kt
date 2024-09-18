@@ -33,15 +33,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import br.com.fiap.locaweb.R
+import br.com.fiap.locaweb.database.repository.UsuarioRepository
+import br.com.fiap.locaweb.model.UsuarioModel
+import com.google.gson.Gson
 
 @Composable
-fun NovoEmailScreen(controleGeral: NavController){
+fun NovoEmailScreen(controleGeral: NavController, backStackEntry: NavBackStackEntry){
+
+    val context = LocalContext.current
+    val usuarioRepository = UsuarioRepository(context)
+
+
+    val userJson = backStackEntry.arguments?.getString("usuario")
+
+    val gson = Gson()
+    val usuario = gson.fromJson(userJson, UsuarioModel::class.java)
 
     fun vibratePhone(context: Context) {
         val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
@@ -51,7 +62,7 @@ fun NovoEmailScreen(controleGeral: NavController){
             vibrator.vibrate(100)
         }
     }
-    val context = LocalContext.current
+
 
     var De by remember() {
         mutableStateOf("")
@@ -79,7 +90,8 @@ fun NovoEmailScreen(controleGeral: NavController){
             IconButton(
                 onClick = {
                     vibratePhone(context)
-                    controleGeral.navigate("menu")
+                    val userJson = gson.toJson(usuario)
+                    controleGeral.navigate("menu/$userJson")
                           },
                 modifier = Modifier.size(30.dp)
             ) {
@@ -276,10 +288,10 @@ fun NovoEmailScreen(controleGeral: NavController){
 
 }
 
-@Preview(showSystemUi = true, showBackground = true)
+/*@Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun NovoEmailScreenPreview() {
 
     NovoEmailScreen(rememberNavController())
 
-}
+}*/

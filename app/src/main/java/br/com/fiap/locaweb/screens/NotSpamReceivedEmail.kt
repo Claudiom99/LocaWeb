@@ -1,6 +1,7 @@
 package br.com.fiap.locaweb.screens
 
 
+//import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,27 +29,28 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-//import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import br.com.fiap.locaweb.R
+import br.com.fiap.locaweb.database.repository.UsuarioRepository
 import br.com.fiap.locaweb.emailsMock.emailNotSpam1
-import br.com.fiap.locaweb.emailsMock.emailSpam1
 import br.com.fiap.locaweb.methods.isSpam
+import br.com.fiap.locaweb.model.UsuarioModel
+import com.google.gson.Gson
 
-@Preview(showSystemUi = true, showBackground = true)
+/*@Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun NotSpamReceivedEmail() {
 
     NotSpamReceivedEmail(rememberNavController())
 
-}
+}*/
 
 @Composable
-fun NotSpamReceivedEmail(controleGeral: NavController) {
+fun NotSpamReceivedEmail(controleGeral: NavController, backStackEntry: NavBackStackEntry) {
 
 
     //val context = LocalContext.current
@@ -66,6 +68,15 @@ fun NotSpamReceivedEmail(controleGeral: NavController) {
         mutableStateOf("")
     }
 
+    val context = LocalContext.current
+    val usuarioRepository = UsuarioRepository(context)
+
+
+    val userJson = backStackEntry.arguments?.getString("usuario")
+
+    val gson = Gson()
+    val usuario = gson.fromJson(userJson, UsuarioModel::class.java)
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -79,8 +90,8 @@ fun NotSpamReceivedEmail(controleGeral: NavController) {
             Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween){
                 IconButton(
                     onClick = {
-
-                        controleGeral.navigate("Categorias")
+                        val userJson = gson.toJson(usuario)
+                        controleGeral.navigate("Categorias/$userJson")
                     },
                     modifier = Modifier.size(30.dp)
                 ) {
@@ -111,7 +122,9 @@ fun NotSpamReceivedEmail(controleGeral: NavController) {
                     }
                 }
                 Button(
-                    onClick = {controleGeral.navigate("novoEmail")},
+                    onClick = {
+                        val userJson = gson.toJson(usuario)
+                        controleGeral.navigate("novoEmail/$userJson")},
                     modifier = Modifier
                         .size(width = 200.dp, height = 40.dp),
 

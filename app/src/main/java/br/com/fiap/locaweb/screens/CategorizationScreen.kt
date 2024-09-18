@@ -2,28 +2,61 @@ package br.com.fiap.locaweb.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import br.com.fiap.locaweb.R
+import br.com.fiap.locaweb.database.repository.UsuarioRepository
+import br.com.fiap.locaweb.model.UsuarioModel
+import com.google.gson.Gson
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategorizationScreen(navController: NavController) {
+fun CategorizationScreen(navController: NavController, backStackEntry: NavBackStackEntry) {
     var pesquisaText by remember { mutableStateOf("") }
+
+    var searchText by remember { mutableStateOf("") }
+    var isActive by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+    val usuarioRepository = UsuarioRepository(context)
+
+
+    val userJson = backStackEntry.arguments?.getString("usuario")
+
+    val gson = Gson()
+    val usuario = gson.fromJson(userJson, UsuarioModel::class.java)
 
     Column(
         modifier = Modifier
@@ -44,7 +77,8 @@ fun CategorizationScreen(navController: NavController) {
                     tint = Color.White,
                     modifier = Modifier.clickable {
                         // Navegar para a tela "menu"
-                        navController.navigate("menu")
+                        val userJson = gson.toJson(usuario)
+                        navController.navigate("menu/$userJson")
                     }
                 )
             },
@@ -86,12 +120,16 @@ fun CategorizationScreen(navController: NavController) {
                 ItemDeCategoriaDeEmail(
                     icon = R.drawable.baseline_inbox_24,
                     texto = "Todos",
-                    onClick = { navController.navigate("todos") }
+                    onClick = {
+                        val userJson = gson.toJson(usuario)
+                        navController.navigate("todos/$userJson") }
                 )
                 ItemDeCategoriaDeEmail(
                     icon = R.drawable.twotone_group_24,
                     texto = "Social",
-                    onClick = { navController.navigate("social") }
+                    onClick = {
+                        val userJson = gson.toJson(usuario)
+                        navController.navigate("social/$userJson") }
                 )
             }
             Spacer(modifier = Modifier.height(20.dp))
@@ -104,12 +142,16 @@ fun CategorizationScreen(navController: NavController) {
                 ItemDeCategoriaDeEmail(
                     icon = R.drawable.twotone_work_outline_24,
                     texto = "Trabalho",
-                    onClick = { navController.navigate("trabalho") }
+                    onClick = {
+                        val userJson = gson.toJson(usuario)
+                        navController.navigate("trabalho/$userJson") }
                 )
                 ItemDeCategoriaDeEmail(
                     icon = R.drawable.baseline_account_balance_24,
                     texto = "Bancos",
-                    onClick = { navController.navigate("bancos") }
+                    onClick = {
+                        val userJson = gson.toJson(usuario)
+                        navController.navigate("bancos/$userJson") }
                 )
             }
             Spacer(modifier = Modifier.height(20.dp))
@@ -122,12 +164,16 @@ fun CategorizationScreen(navController: NavController) {
                 ItemDeCategoriaDeEmail(
                     icon = R.drawable.baseline_notifications_none_24,
                     texto = "Vagas emp",
-                    onClick = { navController.navigate("vagas_emp") }
+                    onClick = {
+                        val userJson = gson.toJson(usuario)
+                        navController.navigate("vagas_emp/$userJson") }
                 )
                 ItemDeCategoriaDeEmail(
                     icon = R.drawable.spam_icon,
                     texto = "Spam",
-                    onClick = { navController.navigate("spam_emails") }
+                    onClick = {
+                        val userJson = gson.toJson(usuario)
+                        navController.navigate("spam_emails/$userJson") }
                 )
             }
         }
@@ -165,7 +211,9 @@ fun CategorizationScreen(navController: NavController) {
             Spacer(modifier = Modifier.width(8.dp))
 
             Button(
-                onClick = { navController.navigate("NovoEmail") },
+                onClick = {
+                    val userJson = gson.toJson(usuario)
+                    navController.navigate("NovoEmail/$userJson") },
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF555555)
@@ -211,7 +259,7 @@ fun ItemDeCategoriaDeEmail(icon: Int, texto: String, onClick: () -> Unit) {
     }
 }
 
-@Preview(showSystemUi = true, showBackground = true)
+/*@Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun CategorizationScreenPreview() {
     val navController = rememberNavController()
@@ -225,4 +273,4 @@ fun CategorizationScreenPreview() {
         composable("vagas_emp") { EmailScreen4(navController) }
         composable("novoEmail") { NovoEmailScreen(navController) }
     }
-}
+}*/
