@@ -3,6 +3,7 @@ package br.com.fiap.locaweb.screens
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,7 +21,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,12 +32,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,6 +51,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.com.fiap.locaweb.R
 import br.com.fiap.locaweb.database.repository.UsuarioRepository
+import br.com.fiap.locaweb.methods.Style
 import br.com.fiap.locaweb.model.UsuarioModel
 import com.google.gson.Gson
 
@@ -60,8 +65,12 @@ fun AlteracaoScreen(
     controleGeral: NavController, backStackEntry: NavBackStackEntry
 ) {
     //instancia repository
+    val focusManager = LocalFocusManager.current
     val context = LocalContext.current
     val usuarioRepository = UsuarioRepository(context)
+
+    val styles = Style(context)
+    val wallpaper = styles.wallpaper()
 
     //pega o usuario em formato Json que foi passado como parametro na tela de login
     val userJson = backStackEntry.arguments?.getString("usuario")
@@ -90,19 +99,23 @@ fun AlteracaoScreen(
     var senhaDiferente by remember { mutableStateOf(false) }
 
     // Cor da linha inferior dos campos de entrada quando focados ou não
-    val lineColorNome = if (isFocusedNome) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
-    val lineColorSenha = if (isFocusedSenha) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
-    val lineColorConfirmar = if (isFocusedConfirmar) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
-    val lineColorEmailCadastro = if (isFocusedEmailCadastro) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
-
-
+    val lineColorNome = styles.textfieldAndIconsFocus(isFocusedNome)
+    val lineColorSenha = styles.textfieldAndIconsFocus(isFocusedSenha)
+    val lineColorConfirmar = styles.textfieldAndIconsFocus(isFocusedConfirmar)
+    val lineColorEmailCadastro = styles.textfieldAndIconsFocus(isFocusedEmailCadastro)
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .pointerInput(Unit){
+                detectTapGestures {
+                    focusManager.clearFocus()
+                }
+            }
     ) {
         // Imagem de fundo
         Image(
-            painter = painterResource(id = R.drawable.fundologin),
+            painter = painterResource(id = wallpaper),
             contentDescription = "Fundo escuro com pedras",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
@@ -128,7 +141,7 @@ fun AlteracaoScreen(
                 fontSize = 25.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.align(alignment = Alignment.CenterHorizontally),
-                color = Color.White
+                color = styles.solidColors()
             )
 
             Column(
@@ -147,14 +160,15 @@ fun AlteracaoScreen(
                         .onFocusChanged { focusState ->
                             isFocusedNome = focusState.isFocused
                         },
-                    textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
+                    textStyle = TextStyle(color = styles.inputText(), fontSize = 18.sp),
                     singleLine = true,
-                    cursorBrush = SolidColor(Color.White),
+                    cursorBrush = SolidColor(styles.inputText()),
                     decorationBox = { innerTextFieldNome ->
                         Column {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.account_circle_24),
+                                    tint = lineColorNome,
                                     contentDescription = "Ícone de usuário genérico",
                                     modifier = Modifier.padding(end = 15.dp)
                                 )
@@ -192,14 +206,15 @@ fun AlteracaoScreen(
                         .onFocusChanged { focusState ->
                             isFocusedEmailCadastro = focusState.isFocused
                         },
-                    textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
+                    textStyle = TextStyle(color = styles.inputText(), fontSize = 18.sp),
                     singleLine = true,
-                    cursorBrush = SolidColor(Color.White),
+                    cursorBrush = SolidColor(styles.inputText()),
                     decorationBox = { innerTextFieldEmail ->
                         Column {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.email_24),
+                                    tint = lineColorEmailCadastro,
                                     contentDescription = "Ícone de e-mail",
                                     modifier = Modifier.padding(end = 15.dp)
                                 )
@@ -237,14 +252,15 @@ fun AlteracaoScreen(
                         .onFocusChanged { focusState ->
                             isFocusedSenha = focusState.isFocused
                         },
-                    textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
+                    textStyle = TextStyle(color = styles.inputText(), fontSize = 18.sp),
                     singleLine = true,
-                    cursorBrush = SolidColor(Color.White),
+                    cursorBrush = SolidColor(styles.inputText()),
                     decorationBox = { innerTextFieldSenha ->
                         Column {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.lock_24),
+                                    tint = lineColorSenha,
                                     contentDescription = "Ícone de cadeado",
                                     modifier = Modifier.padding(end = 15.dp)
                                 )
@@ -283,14 +299,16 @@ fun AlteracaoScreen(
                         .onFocusChanged { focusState ->
                             isFocusedConfirmar = focusState.isFocused
                         },
-                    textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
+                    textStyle = TextStyle(color = styles.inputText(), fontSize = 18.sp),
+//                    visualTransformation = PasswordVisualTransformation,
                     singleLine = true,
-                    cursorBrush = SolidColor(Color.White),
+                    cursorBrush = SolidColor(styles.inputText()),
                     decorationBox = { innerTextFieldConfirmar ->
                         Column {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.lock_24),
+                                    tint = lineColorConfirmar,
                                     contentDescription = "Ícone de cadeado",
                                     modifier = Modifier.padding(end = 15.dp)
                                 )
@@ -356,7 +374,7 @@ fun AlteracaoScreen(
                             text = "Confirmar",
                             modifier = Modifier.width(200.dp),
                             textAlign = TextAlign.Center,
-                            color = Color.Black,
+                            color = styles.textButtonColor(),
                             fontSize = 25.sp
                         )
                     }
@@ -378,13 +396,13 @@ fun AlteracaoScreen(
                         colors = ButtonDefaults.buttonColors(Color.Transparent),
                         shape = RoundedCornerShape(20.dp),
                         modifier = Modifier.padding(horizontal = 35.dp),
-                        border = BorderStroke(1.dp, Color.LightGray)
+                        border = BorderStroke(1.dp, styles.solidColors())
                     ) {
                         Text(
                             text = "Voltar",
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center,
-                            color = Color.LightGray,
+                            color = styles.solidColors(),
                             fontSize = 20.sp
                         )
                     }

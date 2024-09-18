@@ -1,5 +1,6 @@
 package br.com.fiap.locaweb.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -10,9 +11,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,31 +26,44 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.com.fiap.locaweb.R
+import br.com.fiap.locaweb.methods.Style
 
 @Composable
 fun EmailScreen3(controleGeral: NavController) {
+
+    val context = LocalContext.current
+    val styles = Style(context)
+    val wallpaper = styles.wallpaper()
+    val solidColor = styles.solidColors()
+
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color.Black)
+            .fillMaxSize(),
     ) {
+        Image(
+            painter = painterResource(id = wallpaper),
+            contentDescription = "Fundo escuro com pedras",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
         Column(
             modifier = Modifier
-                .fillMaxHeight()
-                .padding(horizontal = 20.dp, vertical = 16.dp),
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             // Barra de pesquisa com a navegação de voltar implementada
             SearchBar3(controleGeral)
 
             // Título da lista de emails com ícone
-            TitleWithIcon3()
+            TitleWithIcon3(solidColor)
 
             // Lista de emails
             EmailList3(controleGeral)
 
             // Botão "Novo"
             NewEmailButton3(controleGeral)
+
         }
     }
 }
@@ -55,55 +73,43 @@ fun EmailScreen3(controleGeral: NavController) {
 fun SearchBar3(navController: NavController) {
     var searchText by remember { mutableStateOf("") }
 
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.DarkGray, shape = RoundedCornerShape(20.dp))
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(
-                onClick = {
+    TextField(
+        value = searchText,
+        onValueChange = { searchText = it },
+        textStyle = TextStyle(color = Color.White),
+        placeholder = { Text("Pesquisar emails", color = Color.White) },
+        leadingIcon = {
+            Icon(
+                painter = painterResource(id = R.drawable.icon_return_button),
+                contentDescription = "Voltar",
+                tint = Color.White,
+                modifier = Modifier.clickable {
                     navController.navigate("Categorias")
-                },
-                modifier = Modifier.size(30.dp)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.keyboard_return_24),
-                    contentDescription = "Ícone voltar",
-                    tint = Color.White,
-                    modifier = Modifier.size(30.dp),
-
-                    )
-            }
-            TextField(
-                value = searchText,
-                onValueChange = { searchText = it },
-                placeholder = { Text("Pesquisar emails", color = Color.Gray) },
-                modifier = Modifier.weight(1f),
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color.Transparent,
-                    cursorColor = Color.White,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                )
+                }
             )
+        },
+        trailingIcon = {
             Icon(
                 painter = painterResource(id = R.drawable.baseline_account_circle_24),
-                contentDescription = "Perfil",
-                tint = Color.White,
-                modifier = Modifier.padding(start = 8.dp)
+                contentDescription = "Usuário",
+                tint = Color.White
             )
-        }
-    }
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .background(color = Color(0xFF555555), shape = RoundedCornerShape(24.dp)),
+        colors = TextFieldDefaults.textFieldColors(
+            containerColor = Color.Transparent,
+            cursorColor = Color.White,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
+        )
+    )
 }
 
 @Composable
-fun TitleWithIcon3() {
+fun TitleWithIcon3(solidColor: Color) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
@@ -114,14 +120,14 @@ fun TitleWithIcon3() {
         Icon(
             painter = painterResource(id = R.drawable.baseline_account_balance_24),
             contentDescription = "Ícone de Email",
-            tint = Color.White,
+            tint = solidColor,
             modifier = Modifier.size(24.dp)
         )
         Text(
             text = "Bancos",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.White,
+            color = solidColor,
             modifier = Modifier.padding(start = 8.dp)
         )
     }
@@ -139,7 +145,7 @@ fun EmailList3(navController: NavController) {
 
     LazyColumn(
         modifier = Modifier
-            .padding(vertical = 16.dp),
+            .padding(vertical = 16.dp, horizontal = 25.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         items(emails) { email ->
@@ -154,6 +160,7 @@ fun EmailItemComponent(email: EmailItem3, navController: NavController) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
+            .shadow(elevation = 10.dp)
             .clickable {
                 navController.navigate("emailRecebido")
             },
@@ -215,7 +222,7 @@ fun NewEmailButton3(controleGeral: NavController) {
         onClick = { controleGeral.navigate("novoEmail") },
         colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.cinza)),
         modifier = Modifier
-            .padding(10.dp)
+            .padding(vertical = 16.dp, horizontal = 25.dp)
             .fillMaxWidth()
     ) {
         Text(

@@ -1,6 +1,7 @@
 package br.com.fiap.locaweb.screens
 
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +21,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,8 +30,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 //import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -37,46 +42,39 @@ import androidx.navigation.compose.rememberNavController
 import br.com.fiap.locaweb.R
 import br.com.fiap.locaweb.emailsMock.emailNotSpam1
 import br.com.fiap.locaweb.emailsMock.emailSpam1
+import br.com.fiap.locaweb.methods.Style
 import br.com.fiap.locaweb.methods.isSpam
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun NotSpamReceivedEmail() {
-
     NotSpamReceivedEmail(rememberNavController())
-
 }
 
 @Composable
 fun NotSpamReceivedEmail(controleGeral: NavController) {
-
-
-    //val context = LocalContext.current
-
-    var De by remember() {
-        mutableStateOf("")
-    }
-    var Para by remember() {
-        mutableStateOf("")
-    }
-    var Titulo by remember() {
-        mutableStateOf("")
-    }
-    var corpoEmail by remember() {
-        mutableStateOf("")
-    }
+    val context = LocalContext.current
+    val styles = Style(context)
+    val wallpaper = styles.wallpaper()
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF121212))
-//        .padding(32.dp)
     ) {
+        Image(
+            painter = painterResource(id = wallpaper),
+            contentDescription = "Fundo escuro com pedras",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
             Spacer(modifier = Modifier.height(20.dp))
-            Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween){
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 IconButton(
                     onClick = {
 
@@ -85,17 +83,18 @@ fun NotSpamReceivedEmail(controleGeral: NavController) {
                     modifier = Modifier.size(30.dp)
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.keyboard_return_24),
+                        painter = painterResource(id = R.drawable.icon_return_button),
                         contentDescription = "Ícone voltar",
-                        tint = Color.White,
+                        tint = styles.solidColors(),
                         modifier = Modifier.size(30.dp),
 
                         )
                 }
                 Spacer(modifier = Modifier.height(15.dp))
-                if(isSpam(emailNotSpam1)){
+                if (isSpam(emailNotSpam1)) {
                     Column(
-                        horizontalAlignment = Alignment.CenterHorizontally                    ) {
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
                         Icon(
                             painter = painterResource(id = R.drawable.spam_icon),
                             contentDescription = "Ícone de alerta",
@@ -111,14 +110,14 @@ fun NotSpamReceivedEmail(controleGeral: NavController) {
                     }
                 }
                 Button(
-                    onClick = {controleGeral.navigate("novoEmail")},
+                    onClick = { controleGeral.navigate("novoEmail") },
                     modifier = Modifier
                         .size(width = 200.dp, height = 40.dp),
 
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xffFF1E1E))
                 )
                 {
-                    Text(text = "Responder", color = Color.Black)
+                    Text(text = "Responder", color = styles.textButtonColor())
 
                 }
 
@@ -131,20 +130,22 @@ fun NotSpamReceivedEmail(controleGeral: NavController) {
                 value = emailNotSpam1.sender,
                 readOnly = true,
                 onValueChange = {},
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                ,
                 shape = RoundedCornerShape(30.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.LightGray,
-                    unfocusedBorderColor = Color.LightGray,
-                    unfocusedTextColor = Color.White,
-                    focusedTextColor = Color.White
-
+                    focusedBorderColor = styles.solidColors(),
+                    unfocusedBorderColor = styles.solidColors(),
                 ),
-                placeholder = {
-                    Text(text = "Seu E-mail")
-                },
+                textStyle = TextStyle(
+                    color = styles.solidColors()
+                ),
                 label = {
-                    Text(text = "De:")
+                    Text(
+                        text = "De:",
+                        color = styles.solidColors()
+                    )
                 },
                 trailingIcon = {
                     IconButton(
@@ -154,7 +155,8 @@ fun NotSpamReceivedEmail(controleGeral: NavController) {
                         Icon(
                             painter = painterResource(id = R.drawable.add_circle),
                             contentDescription = "Ícone adicionar",
-                            modifier = Modifier.size(30.dp)
+                            modifier = Modifier.size(30.dp),
+                            tint = styles.solidColors()
                         )
                     }
                 }
@@ -163,31 +165,34 @@ fun NotSpamReceivedEmail(controleGeral: NavController) {
 
             OutlinedTextField(
                 value = emailNotSpam1.receiver,
-                onValueChange = {},
                 readOnly = true,
+                onValueChange = {},
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(30.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.LightGray,
-                    unfocusedBorderColor = Color.LightGray,
-                    unfocusedTextColor = Color.White,
-                    focusedTextColor = Color.White
+                    styles.solidColors(),
+                    focusedBorderColor = styles.solidColors(),
+                    unfocusedBorderColor = styles.solidColors(),
                 ),
-                placeholder = {
-                    Text(text = "E-mail do destinatário")
-                },
+                textStyle = TextStyle(
+                    color = styles.solidColors()
+                ),
                 label = {
-                    Text(text = "para:")
+                    Text(
+                        text = "Para:",
+                        color = styles.solidColors()
+                    )
                 },
                 trailingIcon = {
                     IconButton(
-                        onClick = {  },
+                        onClick = { },
                         modifier = Modifier.size(30.dp)
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.add_circle),
                             contentDescription = "Ícone adicionar",
-                            modifier = Modifier.size(30.dp)
+                            modifier = Modifier.size(30.dp),
+                            tint = styles.solidColors()
                         )
                     }
                 }
@@ -201,25 +206,28 @@ fun NotSpamReceivedEmail(controleGeral: NavController) {
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(30.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.LightGray,
-                    unfocusedBorderColor = Color.LightGray,
-                    unfocusedTextColor = Color.White,
-                    focusedTextColor = Color.White
+                    styles.solidColors(),
+                    focusedBorderColor = styles.solidColors(),
+                    unfocusedBorderColor = styles.solidColors(),
                 ),
-                placeholder = {
-                    Text(text = "Assunto do E-mail")
-                },
+                textStyle = TextStyle(
+                    color = styles.solidColors()
+                ),
                 label = {
-                    Text(text = "Título: ")
+                    Text(
+                        text = "Título: ",
+                        color = styles.solidColors()
+                    )
                 },
                 trailingIcon = {
                     IconButton(
-                        onClick = {  },
+                        onClick = { },
                         modifier = Modifier.size(30.dp)
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.baseline_smart_toy_24),
                             contentDescription = "Ícone inteligência artificial",
+                            tint = styles.solidColors(),
                             modifier = Modifier.size(30.dp)
                         )
                     }
@@ -237,28 +245,29 @@ fun NotSpamReceivedEmail(controleGeral: NavController) {
                     .height(400.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.LightGray,
-                    unfocusedBorderColor = Color.LightGray,
-                    unfocusedTextColor = Color.White,
-                    focusedTextColor = Color.White
+                    styles.solidColors(),
+                    focusedBorderColor = styles.solidColors(),
+                    unfocusedBorderColor = styles.solidColors(),
                 ),
-                placeholder = {
-                    Text(text = "Conteúdo do E-mail")
-                },
+                textStyle = TextStyle(
+                    color = styles.solidColors()
+                ),
                 label = {
-                    Text (text = "Escreva... ")
-
+                    Text(
+                        text = "Escreva... ",
+                        color = styles.solidColors()
+                    )
                 }
 
 
             )
             Spacer(modifier = Modifier.height(3.dp))
-            Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
 
             }
-
-
-
 
 
         }

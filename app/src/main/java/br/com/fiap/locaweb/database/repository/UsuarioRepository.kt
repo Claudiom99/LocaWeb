@@ -32,4 +32,8 @@ class UsuarioRepository(context: Context) {
     fun buscarPorEmailESenha(email: String, senha : String): UsuarioModel{
         return db.buscarPorEmailESenha(email, senha)
     }
+
+    fun atualizarTema(id: Long, novoTema: String): Boolean {
+        return db.atualizarTema(id, novoTema) > 0
+    }
 }
