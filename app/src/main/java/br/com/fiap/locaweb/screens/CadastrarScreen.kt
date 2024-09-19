@@ -375,7 +375,7 @@ fun CadastrarScreen(
                                         tema = true
                                     )
 
-                                    usuarioRepository.salvar(usuario = usuario)
+                                    usuarioRepository.salvar(usuario)
                                     val gson = Gson()
 
                                     val userJson = gson.toJson(usuario)

@@ -150,8 +150,7 @@ fun MenuScreen(controleGeral: NavController, backStackEntry: NavBackStackEntry) 
                 Button(
                     onClick = {
 
-                        val userJson =
-                            gson.toJson(usuarioRepository.buscarUsuarioPeloId(usuario.id))
+                        val userJson = gson.toJson(usuario)
                         controleGeral.navigate("alterarCadastro/$userJson")
 
                     },

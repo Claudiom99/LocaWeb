@@ -20,7 +20,7 @@ interface UsuarioDao {
     fun excluir(usuarioModel: UsuarioModel): Int
 
     @Query("SELECT * FROM tbl_usuario WHERE id = :id")
-    fun buscarPorID(id: Long): UsuarioModel
+    fun buscarPorID(id : Long): UsuarioModel
 
     @Query("SELECT * FROM tbl_usuario")
     fun buscarTodos(): UsuarioModel

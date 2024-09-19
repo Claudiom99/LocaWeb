@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import br.com.fiap.locaweb.model.UsuarioModel
 
 
-@Database(entities = [UsuarioModel::class], version = 1)
+@Database(entities = [UsuarioModel::class], version = 2)
 abstract class UsuarioDb : RoomDatabase(){
 
     abstract fun usuarioDao() : UsuarioDao
