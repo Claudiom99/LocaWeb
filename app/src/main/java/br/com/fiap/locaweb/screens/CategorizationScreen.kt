@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -54,7 +55,6 @@ fun CategorizationScreen(navController: NavController, backStackEntry: NavBackSt
     val wallpaper = styles.wallpaper()
     var searchText by remember { mutableStateOf("") }
     var isActive by remember { mutableStateOf(false) }
-    val context = LocalContext.current
     val usuarioRepository = UsuarioRepository(context)
     val userJson = backStackEntry.arguments?.getString("usuario")
     val gson = Gson()
@@ -130,15 +130,18 @@ fun CategorizationScreen(navController: NavController, backStackEntry: NavBackSt
                     ItemDeCategoriaDeEmail(
                         icon = R.drawable.baseline_inbox_24,
                         texto = "Todos",
-                        onClick = { 
-                          val userJson = gson.toJson(usuario)
-                        navController.navigate("todos/$userJson") }
+                        onClick = {
+                            val userJson = gson.toJson(usuario)
+                            navController.navigate("todos/$userJson")
+                        }
                     )
                     ItemDeCategoriaDeEmail(
                         icon = R.drawable.twotone_group_24,
                         texto = "Social",
-                        onClick = { val userJson = gson.toJson(usuario)
-                        navController.navigate("social/$userJson") }
+                        onClick = {
+                            val userJson = gson.toJson(usuario)
+                            navController.navigate("social/$userJson")
+                        }
                     )
                 }
                 Spacer(modifier = Modifier.height(20.dp))
@@ -151,14 +154,18 @@ fun CategorizationScreen(navController: NavController, backStackEntry: NavBackSt
                     ItemDeCategoriaDeEmail(
                         icon = R.drawable.twotone_work_outline_24,
                         texto = "Trabalho",
-                        onClick = { val userJson = gson.toJson(usuario)
-                        navController.navigate("trabalho/$userJson") }
+                        onClick = {
+                            val userJson = gson.toJson(usuario)
+                            navController.navigate("trabalho/$userJson")
+                        }
                     )
                     ItemDeCategoriaDeEmail(
                         icon = R.drawable.baseline_account_balance_24,
                         texto = "Bancos",
-                        onClick = { val userJson = gson.toJson(usuario)
-                        navController.navigate("bancos/$userJson") }
+                        onClick = {
+                            val userJson = gson.toJson(usuario)
+                            navController.navigate("bancos/$userJson")
+                        }
                     )
                 }
                 Spacer(modifier = Modifier.height(20.dp))
@@ -171,49 +178,24 @@ fun CategorizationScreen(navController: NavController, backStackEntry: NavBackSt
                     ItemDeCategoriaDeEmail(
                         icon = R.drawable.baseline_notifications_none_24,
                         texto = "Vagas emp",
-                        onClick = { val userJson = gson.toJson(usuario)
-                        navController.navigate("vagas_emp/$userJson") }
+                        onClick = {
+                            val userJson = gson.toJson(usuario)
+                            navController.navigate("vagas_emp/$userJson")
+                        }
                     )
                     ItemDeCategoriaDeEmail(
                         icon = R.drawable.spam_icon,
                         texto = "Spam",
-                        onClick = { val userJson = gson.toJson(usuario)
-                        navController.navigate("spam_emails/$userJson") }
+                        onClick = {
+                            val userJson = gson.toJson(usuario)
+                            navController.navigate("spam_emails/$userJson")
+                        }
                     )
                 }
             }
+        }
 
-            Spacer(modifier = Modifier.weight(1f))
-
-            // Botões de Ação
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Button(
-                    onClick = { /* ação de criar */ },
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF555555)
-                    )
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.outline_inventory_2_24),
-                        contentDescription = "Criar",
-                        tint = Color.White,
-                        modifier = Modifier.padding(end = 8.dp)
-                    )
-                    Text(
-                        text = "Criar",
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(8.dp))
+//        Spacer(modifier = Modifier.weight(1f))
         // Botões de Ação
         Row(
             modifier = Modifier
@@ -293,6 +275,7 @@ fun ItemDeCategoriaDeEmail(icon: Int, texto: String, onClick: () -> Unit) {
         )
     }
 }
+
 
 /*@Preview(showSystemUi = true, showBackground = true)
 @Composable
