@@ -1,5 +1,6 @@
 package br.com.fiap.locaweb.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -31,10 +32,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -42,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import br.com.fiap.locaweb.R
+import br.com.fiap.locaweb.methods.Style
 import br.com.fiap.locaweb.database.repository.UsuarioRepository
 import br.com.fiap.locaweb.model.UsuarioModel
 import com.google.gson.Gson
@@ -49,23 +54,32 @@ import com.google.gson.Gson
 @Composable
 fun EmailScreen2(controleGeral: NavController, backStackEntry: NavBackStackEntry) {
 
+    val context = LocalContext.current
+    val styles = Style(context)
+    val wallpaper = styles.wallpaper()
+    val solidColor = styles.solidColors()
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.Black)
     ) {
+        Image(
+            painter = painterResource(id = wallpaper),
+            contentDescription = "Fundo escuro com pedras",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
         Column(
             modifier = Modifier
-                .fillMaxHeight()
-                .padding(horizontal = 20.dp, vertical = 16.dp),
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             // Barra de pesquisa com a navegação de voltar implementada
             SearchBar2(controleGeral, backStackEntry)
 
             // Título da lista de emails com ícone
-            TitleWithIcon2()
+            TitleWithIcon2(solidColor)
 
             // Lista de emails
             EmailList2(controleGeral, backStackEntry)
@@ -80,67 +94,50 @@ fun EmailScreen2(controleGeral: NavController, backStackEntry: NavBackStackEntry
 @Composable
 fun SearchBar2(navController: NavController, backStackEntry: NavBackStackEntry) {
     var searchText by remember { mutableStateOf("") }
-
-
     val context = LocalContext.current
     val usuarioRepository = UsuarioRepository(context)
-
-
     val userJson = backStackEntry.arguments?.getString("usuario")
-
     val gson = Gson()
     val usuario = gson.fromJson(userJson, UsuarioModel::class.java)
 
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.DarkGray, shape = RoundedCornerShape(20.dp))
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(
-                onClick = {
+    TextField(
+        value = searchText,
+        onValueChange = { searchText = it },
+        textStyle = TextStyle(color = Color.White),
+        placeholder = { Text("Pesquisar emails", color = Color.White) },
+        leadingIcon = {
+            Icon(
+                painter = painterResource(id = R.drawable.icon_return_button),
+                contentDescription = "Voltar",
+                tint = Color.White,
+                modifier = Modifier.clickable {
                     val userJson = gson.toJson(usuario)
                     navController.navigate("Categorias/$userJson")
-                },
-                modifier = Modifier.size(30.dp)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.keyboard_return_24),
-                    contentDescription = "Ícone voltar",
-                    tint = Color.White,
-                    modifier = Modifier.size(30.dp),
-
-                    )
-            }
-            TextField(
-                value = searchText,
-                onValueChange = { searchText = it },
-                placeholder = { Text("Pesquisar emails", color = Color.Gray) },
-                modifier = Modifier.weight(1f),
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color.Transparent,
-                    cursorColor = Color.White,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                )
+                }
             )
+        },
+        trailingIcon = {
             Icon(
                 painter = painterResource(id = R.drawable.baseline_account_circle_24),
-                contentDescription = "Perfil",
-                tint = Color.White,
-                modifier = Modifier.padding(start = 8.dp)
+                contentDescription = "Usuário",
+                tint = Color.White
             )
-        }
-    }
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .background(color = Color(0xFF555555), shape = RoundedCornerShape(24.dp)),
+        colors = TextFieldDefaults.textFieldColors(
+            containerColor = Color.Transparent,
+            cursorColor = Color.White,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
+        )
+    )
 }
 
 @Composable
-fun TitleWithIcon2() {
+fun TitleWithIcon2(solidColor: Color) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
@@ -151,14 +148,14 @@ fun TitleWithIcon2() {
         Icon(
             painter = painterResource(id = R.drawable.twotone_group_24),
             contentDescription = "Ícone de Email",
-            tint = Color.White,
+            tint = solidColor,
             modifier = Modifier.size(24.dp)
         )
         Text(
             text = "Social",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.White,
+            color = solidColor,
             modifier = Modifier.padding(start = 8.dp)
         )
     }
@@ -176,7 +173,7 @@ fun EmailList2(navController: NavController, backStackEntry: NavBackStackEntry) 
 
     LazyColumn(
         modifier = Modifier
-            .padding(vertical = 16.dp),
+            .padding(vertical = 16.dp, horizontal = 25.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         items(emails) { email ->
@@ -211,6 +208,7 @@ fun EmailItem2(email: Email, navController: NavController, backStackEntry: NavBa
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
+            .shadow(elevation = 10.dp)
             .clickable {
                 val userJson = gson.toJson(usuario)
                 navController.navigate("emailRecebido/$userJson")
@@ -285,7 +283,7 @@ fun NewEmailButton2(controleGeral: NavController, backStackEntry: NavBackStackEn
             controleGeral.navigate("novoEmail/$userJson") },
         colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.cinza)),
         modifier = Modifier
-            .padding(10.dp)
+            .padding(vertical = 16.dp, horizontal = 25.dp)
             .fillMaxWidth()
     ) {
         Text(

@@ -28,4 +28,7 @@ interface UsuarioDao {
     @Query("SELECT * FROM tbl_usuario WHERE email = :email and senha = :senha")
     fun buscarPorEmailESenha(email : String, senha : String): UsuarioModel
 
+    @Query("UPDATE tbl_usuario SET tema = :novoTema WHERE id = :id")
+    fun atualizarTema(id: Long, novoTema: String): Int
+
 }

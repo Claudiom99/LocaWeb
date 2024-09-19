@@ -3,6 +3,7 @@ package br.com.fiap.locaweb.screens
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,7 +21,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,12 +32,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -46,6 +49,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.com.fiap.locaweb.R
 import br.com.fiap.locaweb.database.repository.UsuarioRepository
+import br.com.fiap.locaweb.methods.Style
 import br.com.fiap.locaweb.model.UsuarioModel
 import com.google.gson.Gson
 
@@ -58,6 +62,12 @@ import com.google.gson.Gson
 fun CadastrarScreen(
     controleGeral: NavController
 ) {
+    val context = LocalContext.current
+    val usuarioRepository = UsuarioRepository(context)
+
+    val focusManager = LocalFocusManager.current
+    val styles = Style(context)
+
     // Estados para armazenar os valores dos campos de entrada
     var nome by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
@@ -78,21 +88,23 @@ fun CadastrarScreen(
     var senhaDiferente by remember { mutableStateOf(false) }
 
     // Cor da linha inferior dos campos de entrada quando focados ou não
-    val lineColorNome = if (isFocusedNome) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
-    val lineColorSenha = if (isFocusedSenha) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
-    val lineColorConfirmar = if (isFocusedConfirmar) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
-    val lineColorEmailCadastro = if (isFocusedEmailCadastro) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
-
-    //instancia repository
-    val context = LocalContext.current
-    val usuarioRepository = UsuarioRepository(context)
+    val lineColorNome = styles.textfieldAndIconsFocus(isFocusedNome)
+    val lineColorSenha = styles.textfieldAndIconsFocus(isFocusedSenha)
+    val lineColorConfirmar = styles.textfieldAndIconsFocus(isFocusedConfirmar)
+    val lineColorEmailCadastro = styles.textfieldAndIconsFocus(isFocusedEmailCadastro)
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .pointerInput(Unit) {
+                detectTapGestures {
+                    focusManager.clearFocus()
+                }
+            }
     ) {
         // Imagem de fundo
         Image(
-            painter = painterResource(id = R.drawable.fundologin),
+            painter = painterResource(id = styles.wallpaper()),
             contentDescription = "Fundo escuro com pedras",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
@@ -108,7 +120,7 @@ fun CadastrarScreen(
                 contentDescription = "Logotipo",
                 modifier = Modifier
                     .padding(end = 15.dp)
-                    .size(200.dp) // Tamanho desejado para o ícone do logotipo
+                    .size(200.dp)
                     .align(Alignment.CenterHorizontally)
             )
 
@@ -118,7 +130,7 @@ fun CadastrarScreen(
                 fontSize = 25.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.align(alignment = Alignment.CenterHorizontally),
-                color = Color.White
+                color = styles.solidColors()
             )
 
             Column(
@@ -137,14 +149,15 @@ fun CadastrarScreen(
                         .onFocusChanged { focusState ->
                             isFocusedNome = focusState.isFocused
                         },
-                    textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
+                    textStyle = TextStyle(color = styles.inputText(), fontSize = 18.sp),
                     singleLine = true,
-                    cursorBrush = SolidColor(Color.White),
+                    cursorBrush = SolidColor(styles.inputText()),
                     decorationBox = { innerTextFieldNome ->
                         Column {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.account_circle_24),
+                                    tint = lineColorNome,
                                     contentDescription = "Ícone de usuário genérico",
                                     modifier = Modifier.padding(end = 15.dp)
                                 )
@@ -188,14 +201,15 @@ fun CadastrarScreen(
                         .onFocusChanged { focusState ->
                             isFocusedEmailCadastro = focusState.isFocused
                         },
-                    textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
+                    textStyle = TextStyle(color = styles.inputText(), fontSize = 18.sp),
                     singleLine = true,
-                    cursorBrush = SolidColor(Color.White),
+                    cursorBrush = SolidColor(styles.inputText()),
                     decorationBox = { innerTextFieldEmail ->
                         Column {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.email_24),
+                                    tint = lineColorEmailCadastro,
                                     contentDescription = "Ícone de e-mail",
                                     modifier = Modifier.padding(end = 15.dp)
                                 )
@@ -239,14 +253,16 @@ fun CadastrarScreen(
                         .onFocusChanged { focusState ->
                             isFocusedSenha = focusState.isFocused
                         },
-                    textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
+                    textStyle = TextStyle(color = styles.inputText(), fontSize = 18.sp),
+                    visualTransformation = PasswordVisualTransformation(),
                     singleLine = true,
-                    cursorBrush = SolidColor(Color.White),
+                    cursorBrush = SolidColor(styles.inputText()),
                     decorationBox = { innerTextFieldSenha ->
                         Column {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.lock_24),
+                                    tint = lineColorSenha,
                                     contentDescription = "Ícone de cadeado",
                                     modifier = Modifier.padding(end = 15.dp)
                                 )
@@ -290,14 +306,16 @@ fun CadastrarScreen(
                         .onFocusChanged { focusState ->
                             isFocusedConfirmar = focusState.isFocused
                         },
-                    textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
+                    textStyle = TextStyle(color = styles.inputText(), fontSize = 18.sp),
                     singleLine = true,
-                    cursorBrush = SolidColor(Color.White),
+                    cursorBrush = SolidColor(styles.inputText()),
+                    visualTransformation = PasswordVisualTransformation(),
                     decorationBox = { innerTextFieldConfirmar ->
                         Column {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.lock_24),
+                                    tint = lineColorConfirmar,
                                     contentDescription = "Ícone de cadeado",
                                     modifier = Modifier.padding(end = 15.dp)
                                 )
@@ -354,6 +372,7 @@ fun CadastrarScreen(
                                         nome = nome,
                                         email = emailCadastro,
                                         senha = senha,
+                                        tema = true
                                     )
 
                                     usuarioRepository.salvar(usuario = usuario)
@@ -372,7 +391,7 @@ fun CadastrarScreen(
                             text = "Confirmar",
                             modifier = Modifier.width(200.dp),
                             textAlign = TextAlign.Center,
-                            color = Color.Black,
+                            color = styles.textButtonColor(),
                             fontSize = 25.sp
                         )
                     }
@@ -393,13 +412,13 @@ fun CadastrarScreen(
                         colors = ButtonDefaults.buttonColors(Color.Transparent),
                         shape = RoundedCornerShape(20.dp),
                         modifier = Modifier.padding(horizontal = 35.dp),
-                        border = BorderStroke(1.dp, Color.LightGray)
+                        border = BorderStroke(1.dp, styles.solidColors())
                     ) {
                         Text(
                             text = "Entrar",
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center,
-                            color = Color.LightGray,
+                            color = styles.solidColors(),
                             fontSize = 20.sp
                         )
                     }

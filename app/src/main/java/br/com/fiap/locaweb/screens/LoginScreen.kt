@@ -1,8 +1,13 @@
 package br.com.fiap.locaweb.screens
 
+import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,14 +34,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,6 +55,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.com.fiap.locaweb.R
 import br.com.fiap.locaweb.database.repository.UsuarioRepository
+import br.com.fiap.locaweb.methods.Style
 import br.com.fiap.locaweb.model.UsuarioModel
 import com.google.gson.Gson
 
@@ -59,23 +69,34 @@ fun LoginScreen(controleGeral: NavController) {
     var isFocusedEmail by remember { mutableStateOf(false) }
     var isFocusedPassword by remember { mutableStateOf(false) }
 
-    val textColor = Color.White  // Cor do texto
-    val lineColor = if (isFocusedEmail) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
-    val lineColor1 = if (isFocusedPassword) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
-
-    //instancia repository
     val context = LocalContext.current
+    val styles = Style(context)
+
+    val textColor = styles.inputText()
+    val lineColor = styles.textfieldAndIconsFocus(isFocusedEmail)
+    val lineColor1 = styles.textfieldAndIconsFocus(isFocusedPassword)
+
     val usuarioRepository = UsuarioRepository(context)
 
+    val focusManager = LocalFocusManager.current
+
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .pointerInput(Unit) {
+                detectTapGestures {
+                    focusManager.clearFocus()
+                }
+            }
+
     ) {
         Image(
-            painter = painterResource(id = R.drawable.fundologin),
+            painter = painterResource(id = styles.wallpaper()),
             contentDescription = "Fundo escuro com pedras",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
+
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -86,7 +107,7 @@ fun LoginScreen(controleGeral: NavController) {
                 painter = painterResource(id = R.drawable.locaweb_logo),
                 contentDescription = "Logo da LocaWeb",
                 modifier = Modifier
-                    .size(200.dp) // Ajuste o tamanho conforme necessário
+                    .size(200.dp)
                     .align(alignment = Alignment.CenterHorizontally)
             )
 
@@ -113,7 +134,7 @@ fun LoginScreen(controleGeral: NavController) {
                         },
                     textStyle = TextStyle(color = textColor, fontSize = 18.sp),
                     singleLine = true,
-                    cursorBrush = SolidColor(Color.White),
+                    cursorBrush = SolidColor(textColor),
                     decorationBox = { innerTextFieldEmail ->
                         Column {
                             Row(
@@ -121,6 +142,7 @@ fun LoginScreen(controleGeral: NavController) {
                             ) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.baseline_account_circle_24),
+                                    tint = lineColor,
                                     contentDescription = "ícone de usuário genérico",
                                     modifier = Modifier.padding(
                                         end = 15.dp,
@@ -137,7 +159,7 @@ fun LoginScreen(controleGeral: NavController) {
                                 Text(
                                     text = placeholderEmail,
                                     fontSize = 18.sp,
-                                    color = if (placeholderEmail.isNotEmpty()) Color.Gray else Color.Transparent
+                                    color = if (placeholderEmail.isNotEmpty()) lineColor else Color.Transparent
                                 )
                                 innerTextFieldEmail()
                             }
@@ -158,8 +180,7 @@ fun LoginScreen(controleGeral: NavController) {
                         color = Color.Red,
                         textAlign = TextAlign.Right
                     )
-                }
-                else if (loginNaoExiste) {
+                } else if (loginNaoExiste) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         text = "Login não existe",
@@ -185,9 +206,10 @@ fun LoginScreen(controleGeral: NavController) {
                         .onFocusChanged { focusState ->
                             isFocusedPassword = focusState.isFocused
                         },
+                    visualTransformation = PasswordVisualTransformation(),
                     textStyle = TextStyle(color = textColor, fontSize = 18.sp),
                     singleLine = true,
-                    cursorBrush = SolidColor(Color.White),
+                    cursorBrush = SolidColor(textColor),
                     decorationBox = { innerTextFieldPassword ->
                         Column {
                             Row(
@@ -195,6 +217,7 @@ fun LoginScreen(controleGeral: NavController) {
                             ) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.lock_24),
+                                    tint = lineColor1,
                                     contentDescription = "ícone de cadeado",
                                     modifier = Modifier.padding(
                                         end = 15.dp,
@@ -203,15 +226,16 @@ fun LoginScreen(controleGeral: NavController) {
                                         bottom = 5.dp
                                     )
                                 )
-                                val placeholderPassword = if (!isFocusedPassword && password.isEmpty()) {
-                                    "Digite sua senha"
-                                } else {
-                                    ""
-                                }
+                                val placeholderPassword =
+                                    if (!isFocusedPassword && password.isEmpty()) {
+                                        "Digite sua senha"
+                                    } else {
+                                        ""
+                                    }
                                 Text(
                                     text = placeholderPassword,
                                     fontSize = 18.sp,
-                                    color = if (placeholderPassword.isNotEmpty()) Color.Gray else Color.Transparent
+                                    color = if (placeholderPassword.isNotEmpty()) lineColor1 else Color.Transparent
                                 )
                                 innerTextFieldPassword()
                             }
@@ -232,8 +256,7 @@ fun LoginScreen(controleGeral: NavController) {
                         color = Color.Red,
                         textAlign = TextAlign.Right
                     )
-                }
-                else if (loginNaoExiste) {
+                } else if (loginNaoExiste) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         text = "Login não existe",
@@ -256,17 +279,19 @@ fun LoginScreen(controleGeral: NavController) {
                                 erroPassword = true
                             } else {
 
-                                val usuario : UsuarioModel = usuarioRepository.buscarPorEmailESenha(email, password)
+                                val usuario: UsuarioModel =
+                                    usuarioRepository.buscarPorEmailESenha(email, password)
                                 val userJson = gson.toJson(usuario)
 
-                                if(usuario == null){
+                                if (usuario == null) {
                                     loginNaoExiste = true
-                                }else if(usuario.email.equals(email) && usuario.senha.equals(password)){
+                                } else if (usuario.email == email && usuario.senha == password) {
                                     controleGeral.navigate("menu/$userJson")
+                                    val usuarioId = usuario.id
+                                    _salvarIdDoUsuario(context, usuarioId)
                                 } else {
                                     loginNaoExiste = true
                                 }
-
                             }
                         },
                         colors = ButtonDefaults.buttonColors(Color(0xffFF1E1E)),
@@ -277,7 +302,7 @@ fun LoginScreen(controleGeral: NavController) {
                             text = "Entrar",
                             modifier = Modifier.width(200.dp),
                             textAlign = TextAlign.Center,
-                            color = Color.Black,
+                            color = styles.textButtonColor(),
                             fontSize = 25.sp
                         )
                     }
@@ -292,7 +317,7 @@ fun LoginScreen(controleGeral: NavController) {
                             text = "Esqueceu sua senha?",
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center,
-                            color = Color.LightGray,
+                            color = styles.solidColors(),
                             fontSize = 20.sp,
                             style = TextStyle(textDecoration = TextDecoration.Underline)
                         )
@@ -313,18 +338,26 @@ fun LoginScreen(controleGeral: NavController) {
                     colors = ButtonDefaults.buttonColors(Color.Transparent),
                     shape = RoundedCornerShape(20.dp),
                     modifier = Modifier.padding(horizontal = 35.dp),
-                    border = BorderStroke(1.dp, Color.LightGray)
+                    border = BorderStroke(1.dp, styles.solidColors())
                 ) {
                     Text(
                         text = "Cadastre-se",
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
-                        color = Color.LightGray,
+                        color = styles.solidColors(),
                         fontSize = 20.sp
                     )
                 }
             }
         }
+    }
+}
+
+fun _salvarIdDoUsuario(context: Context, id: Long) {
+    val sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+    with(sharedPreferences.edit()) {
+        putLong("user_id", id)
+        apply()
     }
 }
 
