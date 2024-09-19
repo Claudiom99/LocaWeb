@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -49,15 +50,9 @@ fun AgendarEventoScreen(navController: NavController, backStackEntry: NavBackSta
     val context = LocalContext.current
     val styles = Style(context)
     val wallpaper = styles.wallpaper()
-
     var openCalendar by remember { mutableStateOf(false) }
-
-
     val usuarioRepository = UsuarioRepository(context)
-
-
     val userJson = backStackEntry.arguments?.getString("usuario")
-
     val gson = Gson()
     val usuario = gson.fromJson(userJson, UsuarioModel::class.java)
 
@@ -124,7 +119,9 @@ fun AgendarEventoScreen(navController: NavController, backStackEntry: NavBackSta
                     .clickable {
                         val userJson = gson.toJson(usuario)
                         navController.navigate("menu/$userJson") {
-                        popUpTo("menu") { inclusive = true }
+                            popUpTo("menu") { inclusive = true }
+                        }
+                    },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
