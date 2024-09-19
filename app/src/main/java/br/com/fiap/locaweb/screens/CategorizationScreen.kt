@@ -59,7 +59,6 @@ fun CategorizationScreen(navController: NavController, backStackEntry: NavBackSt
     val userJson = backStackEntry.arguments?.getString("usuario")
     val gson = Gson()
     val usuario = gson.fromJson(userJson, UsuarioModel::class.java)
-    
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -101,6 +100,7 @@ fun CategorizationScreen(navController: NavController, backStackEntry: NavBackSt
                     )
                 },
                 modifier = Modifier
+                    .fillMaxWidth()
                     .padding(16.dp)
                     .background(color = Color(0xFF555555), shape = RoundedCornerShape(24.dp)),
                 colors = TextFieldDefaults.textFieldColors(
@@ -193,59 +193,61 @@ fun CategorizationScreen(navController: NavController, backStackEntry: NavBackSt
                     )
                 }
             }
-        }
 
-//        Spacer(modifier = Modifier.weight(1f))
-        // Botões de Ação
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Button(
-                onClick = { /* ação de criar */ },
-                modifier = Modifier.weight(1f),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF555555)
-                )
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Botões de Ação
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.outline_inventory_2_24),
-                    contentDescription = "Criar",
-                    tint = Color.White,
-                    modifier = Modifier.padding(end = 8.dp)
-                )
-                Text(
-                    text = "Criar",
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+                Button(
+                    onClick = { /* ação de criar */ },
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF555555)
+                    )
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.outline_inventory_2_24),
+                        contentDescription = "Criar",
+                        tint = Color.White,
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                    Text(
+                        text = "Criar",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
 
-            Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(8.dp))
 
-            Button(
-                onClick = {
-                    val userJson = gson.toJson(usuario)
-                    navController.navigate("NovoEmail/$userJson") },
-                modifier = Modifier.weight(1f),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF555555)
-                )
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.outline_border_color_24),
-                    contentDescription = "Novo",
-                    tint = Color.White,
-                    modifier = Modifier.padding(end = 8.dp)
-                )
-                Text(
-                    text = "Novo",
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold
-                )
+                Button(
+                    onClick = {
+                        val userJson = gson.toJson(usuario)
+                        navController.navigate("NovoEmail/$userJson")
+                    },
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF555555)
+                    )
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.outline_border_color_24),
+                        contentDescription = "Novo",
+                        tint = Color.White,
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                    Text(
+                        text = "Novo",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
     }
@@ -276,7 +278,6 @@ fun ItemDeCategoriaDeEmail(icon: Int, texto: String, onClick: () -> Unit) {
     }
 }
 
-
 /*@Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun CategorizationScreenPreview() {
@@ -289,6 +290,6 @@ fun CategorizationScreenPreview() {
         composable("trabalho") { EmailScreen1(navController) }
         composable("bancos") { EmailScreen3(navController) }
         composable("vagas_emp") { EmailScreen4(navController) }
-        composable("novoEmail") { NovoEmailScreen(navController) }
+        composable("spam_emails") { SpamEmails(navController) }
     }
 }*/
