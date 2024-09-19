@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -186,6 +187,7 @@ fun LoginScreen(controleGeral: NavController) {
                         .onFocusChanged { focusState ->
                             isFocusedPassword = focusState.isFocused
                         },
+                    visualTransformation = PasswordVisualTransformation(),
                     textStyle = TextStyle(color = textColor, fontSize = 18.sp),
                     singleLine = true,
                     cursorBrush = SolidColor(textColor),

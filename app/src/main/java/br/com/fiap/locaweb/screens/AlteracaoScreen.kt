@@ -254,6 +254,7 @@ fun AlteracaoScreen(
                         },
                     textStyle = TextStyle(color = styles.inputText(), fontSize = 18.sp),
                     singleLine = true,
+                    visualTransformation = PasswordVisualTransformation(),
                     cursorBrush = SolidColor(styles.inputText()),
                     decorationBox = { innerTextFieldSenha ->
                         Column {
@@ -300,7 +301,7 @@ fun AlteracaoScreen(
                             isFocusedConfirmar = focusState.isFocused
                         },
                     textStyle = TextStyle(color = styles.inputText(), fontSize = 18.sp),
-//                    visualTransformation = PasswordVisualTransformation,
+                    visualTransformation = PasswordVisualTransformation(),
                     singleLine = true,
                     cursorBrush = SolidColor(styles.inputText()),
                     decorationBox = { innerTextFieldConfirmar ->
