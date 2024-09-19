@@ -1,7 +1,9 @@
 package br.com.fiap.locaweb.screens.SpamEmailsScreens
 
 
+
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,26 +36,37 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import br.com.fiap.locaweb.R
+import br.com.fiap.locaweb.database.repository.UsuarioRepository
 import br.com.fiap.locaweb.emailsMock.emailSpam2
 import br.com.fiap.locaweb.emailsMock.emailSpam3
 import br.com.fiap.locaweb.methods.Style
 import br.com.fiap.locaweb.methods.isSpam
+import br.com.fiap.locaweb.model.UsuarioModel
+import com.google.gson.Gson
 
-@Preview(showSystemUi = true, showBackground = true)
+/*@Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun SpamReceivedEmail2() {
     SpamReceivedEmail(rememberNavController())
 }
+*/
 
 @Composable
-fun SpamReceivedEmail2(controleGeral: NavController) {
+fun SpamReceivedEmail2(controleGeral: NavController, backStackEntry: NavBackStackEntry) {
     val context = LocalContext.current
     val styles = Style(context)
     val wallpaper = styles.wallpaper()
+    val context = LocalContext.current
+    val usuarioRepository = UsuarioRepository(context)
+    val userJson = backStackEntry.arguments?.getString("usuario")
+    val gson = Gson()
+    val usuario = gson.fromJson(userJson, UsuarioModel::class.java)
 
     Box(
         modifier = Modifier
@@ -75,8 +88,8 @@ fun SpamReceivedEmail2(controleGeral: NavController) {
             ) {
                 IconButton(
                     onClick = {
-
-                        controleGeral.navigate("spam_emails")
+                        val userJson = gson.toJson(usuario)
+                        controleGeral.navigate("spam_emails/$userJson")
                     },
                     modifier = Modifier.size(30.dp)
                 ) {
@@ -109,7 +122,9 @@ fun SpamReceivedEmail2(controleGeral: NavController) {
                     }
                 }
                 Button(
-                    onClick = { controleGeral.navigate("novoEmail") },
+                    onClick = {
+                        val userJson = gson.toJson(usuario)
+                        controleGeral.navigate("novoEmail/$userJson")},
                     modifier = Modifier
                         .size(width = 200.dp, height = 40.dp),
 

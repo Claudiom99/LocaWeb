@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import br.com.fiap.locaweb.classes.SheredUser
+import br.com.fiap.locaweb.R
 import br.com.fiap.locaweb.database.repository.UsuarioRepository
 import br.com.fiap.locaweb.methods.ButtonTheme
 import br.com.fiap.locaweb.methods.Style
@@ -109,7 +110,8 @@ fun MenuScreen(controleGeral: NavController, backStackEntry: NavBackStackEntry) 
                 Spacer(modifier = Modifier.height(20.dp))
                 Button(
                     onClick = {
-                        controleGeral.navigate("Categorias")
+                        val userJson = gson.toJson(usuario)
+                        controleGeral.navigate("Categorias/$userJson")
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xffFF1E1E)),
                     shape = RoundedCornerShape(20.dp),
@@ -127,7 +129,8 @@ fun MenuScreen(controleGeral: NavController, backStackEntry: NavBackStackEntry) 
                 Spacer(modifier = Modifier.height(20.dp))
                 Button(
                     onClick = {
-                        controleGeral.navigate("agendar_evento")
+                        val userJson = gson.toJson(usuario)
+                        controleGeral.navigate("agendar_evento/$userJson")
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xffFF1E1E)),
                     shape = RoundedCornerShape(20.dp),

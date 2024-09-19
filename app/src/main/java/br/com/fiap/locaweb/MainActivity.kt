@@ -10,7 +10,21 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import br.com.fiap.locaweb.screens.*
+import br.com.fiap.locaweb.screens.AgendarEventoScreen
+import br.com.fiap.locaweb.screens.AlteracaoScreen
+import br.com.fiap.locaweb.screens.CadastrarScreen
+import br.com.fiap.locaweb.screens.CategorizationScreen
+import br.com.fiap.locaweb.screens.EmailRecebidoScreen
+import br.com.fiap.locaweb.screens.EmailScreen
+import br.com.fiap.locaweb.screens.EmailScreen1
+import br.com.fiap.locaweb.screens.EmailScreen2
+import br.com.fiap.locaweb.screens.EmailScreen3
+import br.com.fiap.locaweb.screens.EmailScreen4
+import br.com.fiap.locaweb.screens.EmailScreen6
+import br.com.fiap.locaweb.screens.LoginScreen
+import br.com.fiap.locaweb.screens.MenuScreen
+import br.com.fiap.locaweb.screens.NotSpamReceivedEmail
+import br.com.fiap.locaweb.screens.NovoEmailScreen
 import br.com.fiap.locaweb.screens.SpamEmailsScreens.SpamReceivedEmail
 import br.com.fiap.locaweb.screens.SpamEmailsScreens.SpamReceivedEmail2
 import br.com.fiap.locaweb.screens.SpamEmailsScreens.SpamReceivedEmail3
@@ -43,58 +57,82 @@ class MainActivity : ComponentActivity() {
                             backStackEntry ->
                             MenuScreen(controleGeral, backStackEntry)
                         }
-                        composable(route = "Categorias") {
-                            CategorizationScreen(controleGeral)
+                        composable(route = "Categorias/{usuario}") {
+                            backStackEntry ->
+                            CategorizationScreen(controleGeral, backStackEntry)
                         }
-                        composable(route = "Todos") {
-                            EmailScreen(controleGeral)
+                        composable(route = "Todos/{usuario}") {
+                                backStackEntry ->
+                            EmailScreen(controleGeral, backStackEntry)
                         }
-                        composable(route = "Social") {
-                            EmailScreen2(controleGeral)
+                        composable(route = "Social/{usuario}") {
+                                backStackEntry ->
+                            EmailScreen2(controleGeral, backStackEntry)
                         }
-                        composable(route = "Trabalho") {
-                            EmailScreen1(controleGeral)
+                        composable(route = "Trabalho/{usuario}") {
+                                backStackEntry ->
+                            EmailScreen1(controleGeral, backStackEntry)
                         }
-                        composable(route = "Bancos") {
-                            EmailScreen3(controleGeral)
+                        composable(route = "Bancos/{usuario}") {
+                                backStackEntry ->
+                            EmailScreen3(controleGeral, backStackEntry)
                         }
-                        composable(route = "Vagas_emp") {
-                            EmailScreen4(controleGeral)
+                        composable(route = "Vagas_emp/{usuario}") {
+                                backStackEntry ->
+                            EmailScreen4(controleGeral, backStackEntry)
                         }
-                        composable(route = "spam_emails") {
-                            EmailScreen6(controleGeral)
+                        composable(route = "spam_emails/{usuario}") {
+                                backStackEntry ->
+                            EmailScreen6(controleGeral, backStackEntry)
                         }
                         composable(route = "cadastre-se") {
+
                             CadastrarScreen(controleGeral)
                         }
-                        composable(route = "novoEmail") {
-                            NovoEmailScreen(controleGeral)
+                        composable(route = "novoEmail/{usuario}") {
+                                backStackEntry ->
+                            NovoEmailScreen(controleGeral, backStackEntry)
                         }
-                        composable(route = "emailRecebido") {
-                            NotSpamReceivedEmail(controleGeral)
+                        composable(route = "emailRecebido/{usuario}") {
+                                backStackEntry ->
+                            NotSpamReceivedEmail(controleGeral, backStackEntry)
                         }
-                        composable(route = "emailSpamRecebido") {
-                            SpamReceivedEmail(controleGeral)
+                        composable(route = "emailSpamRecebido/{usuario}") {
+                                backStackEntry ->
+                            SpamReceivedEmail(controleGeral, backStackEntry)
                         }
-                        composable(route = "emailSpamRecebido2") {
-                            SpamReceivedEmail2(controleGeral)
+                        composable(route = "emailSpamRecebido2/{usuario}") {
+                                backStackEntry ->
+                            SpamReceivedEmail2(controleGeral, backStackEntry)
                         }
-                        composable(route = "emailSpamRecebido3") {
-                            SpamReceivedEmail3(controleGeral)
+                        composable(route = "emailSpamRecebido3/{usuario}") {
+                                backStackEntry ->
+                            SpamReceivedEmail3(controleGeral, backStackEntry)
                         }
-                        composable(route = "emailSpamRecebido4") {
-                            SpamReceivedEmail4(controleGeral)
+                        composable(route = "emailSpamRecebido4/{usuario}") {
+                                backStackEntry ->
+                            SpamReceivedEmail4(controleGeral, backStackEntry)
                         }
-                        composable(route = "emailSpamRecebido5") {
-                            SpamReceivedEmail5(controleGeral)
+                        composable(route = "emailSpamRecebido5/{usuario}") {
+                                backStackEntry ->
+                            SpamReceivedEmail5(controleGeral, backStackEntry)
                         }
-                        composable(route = "agendar_evento") {
-                            AgendarEventoScreen(controleGeral)
+                        composable(route = "agendar_evento/{usuario}") {
+                                backStackEntry ->
+                            AgendarEventoScreen(controleGeral, backStackEntry)
                         }
                         composable(route = "alterarCadastro/{usuario}"){
                             backStackEntry ->
                             AlteracaoScreen(controleGeral, backStackEntry)
+
                         }
+                        composable(route = "emailRecebido/{emailSender}/{emailSubject}/{emailContent}") { backStackEntry ->
+                            val emailSender = backStackEntry.arguments?.getString("emailSender") ?: ""
+                            val emailSubject = backStackEntry.arguments?.getString("emailSubject") ?: ""
+                            val emailContent = backStackEntry.arguments?.getString("emailContent") ?: ""
+                            EmailRecebidoScreen(emailSender, emailSubject, emailContent,)
+                        }
+
                     }
                 }
             }

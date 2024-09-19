@@ -3,12 +3,33 @@ package br.com.fiap.locaweb.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -20,22 +41,24 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import br.com.fiap.locaweb.R
 import br.com.fiap.locaweb.methods.Style
+import br.com.fiap.locaweb.database.repository.UsuarioRepository
+import br.com.fiap.locaweb.model.UsuarioModel
+import com.google.gson.Gson
 
 @Composable
-fun EmailScreen3(controleGeral: NavController) {
+fun EmailScreen3(controleGeral: NavController, backStackEntry: NavBackStackEntry) {
 
     val context = LocalContext.current
     val styles = Style(context)
     val wallpaper = styles.wallpaper()
     val solidColor = styles.solidColors()
-
+    
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -53,25 +76,31 @@ fun EmailScreen3(controleGeral: NavController) {
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             // Barra de pesquisa com a navegação de voltar implementada
-            SearchBar3(controleGeral)
+            SearchBar3(controleGeral, backStackEntry)
 
             // Título da lista de emails com ícone
             TitleWithIcon3(solidColor)
 
             // Lista de emails
-            EmailList3(controleGeral)
+            EmailList3(controleGeral, backStackEntry)
 
             // Botão "Novo"
-            NewEmailButton3(controleGeral)
-
+            NewEmailButton3(controleGeral, backStackEntry)
+            
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchBar3(navController: NavController) {
+fun SearchBar3(navController: NavController, backStackEntry: NavBackStackEntry) {
     var searchText by remember { mutableStateOf("") }
+    val context = LocalContext.current
+    val usuarioRepository = UsuarioRepository(context)
+    val userJson = backStackEntry.arguments?.getString("usuario")
+    val gson = Gson()
+    val usuario = gson.fromJson(userJson, UsuarioModel::class.java)
+
 
     TextField(
         value = searchText,
@@ -84,7 +113,8 @@ fun SearchBar3(navController: NavController) {
                 contentDescription = "Voltar",
                 tint = Color.White,
                 modifier = Modifier.clickable {
-                    navController.navigate("Categorias")
+                    val userJson = gson.toJson(usuario)
+                    navController.navigate("Categorias/$userJson")
                 }
             )
         },
@@ -134,7 +164,7 @@ fun TitleWithIcon3(solidColor: Color) {
 }
 
 @Composable
-fun EmailList3(navController: NavController) {
+fun EmailList3(navController: NavController, backStackEntry: NavBackStackEntry) {
     val emails = listOf(
         EmailItem3("David Moura", "Pix Recebido no valor de ....", "Conteúdo do email"),
         EmailItem3("Claúdio Maciel", "Pix Recebido no valor de ....", "Conteúdo do email"),
@@ -149,20 +179,30 @@ fun EmailList3(navController: NavController) {
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         items(emails) { email ->
-            EmailItemComponent(email, navController)
+            EmailItemComponent(email, navController, backStackEntry)
         }
     }
 }
 
 @Composable
-fun EmailItemComponent(email: EmailItem3, navController: NavController) {
+fun EmailItemComponent(email: EmailItem3, navController: NavController, backStackEntry: NavBackStackEntry) {
+    val context = LocalContext.current
+    val usuarioRepository = UsuarioRepository(context)
+
+
+    val userJson = backStackEntry.arguments?.getString("usuario")
+
+    val gson = Gson()
+    val usuario = gson.fromJson(userJson, UsuarioModel::class.java)
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
             .shadow(elevation = 10.dp)
             .clickable {
-                navController.navigate("emailRecebido")
+                val userJson = gson.toJson(usuario)
+                navController.navigate("emailRecebido/$userJson")
             },
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -217,9 +257,20 @@ fun EmailItemComponent(email: EmailItem3, navController: NavController) {
 }
 
 @Composable
-fun NewEmailButton3(controleGeral: NavController) {
+fun NewEmailButton3(controleGeral: NavController, backStackEntry: NavBackStackEntry) {
+    val context = LocalContext.current
+    val usuarioRepository = UsuarioRepository(context)
+
+
+    val userJson = backStackEntry.arguments?.getString("usuario")
+
+    val gson = Gson()
+    val usuario = gson.fromJson(userJson, UsuarioModel::class.java)
+
     Button(
-        onClick = { controleGeral.navigate("novoEmail") },
+        onClick = {
+            val userJson = gson.toJson(usuario)
+            controleGeral.navigate("novoEmail/$userJson") },
         colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.cinza)),
         modifier = Modifier
             .padding(vertical = 16.dp, horizontal = 25.dp)
@@ -236,9 +287,9 @@ fun NewEmailButton3(controleGeral: NavController) {
 
 data class EmailItem3(val name: String, val subject: String, val content: String)
 
-@Preview(showSystemUi = true, showBackground = true)
+/*@Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun EmailScreen3Preview() {
     // Inicializando controleGeral com um objeto NavHostController
     EmailScreen3(rememberNavController())
-}
+}*/
