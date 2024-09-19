@@ -163,12 +163,23 @@ fun TitleWithIcon6() {
 
 @Composable
 fun EmailList6(navController: NavController, backStackEntry: NavBackStackEntry) {
+
+    val context = LocalContext.current
+    val usuarioRepository = UsuarioRepository(context)
+
+
+    val userJson = backStackEntry.arguments?.getString("usuario")
+
+    val gson = Gson()
+    val usuario = gson.fromJson(userJson, UsuarioModel::class.java)
+
+    val userGson = gson.toJson(usuario)
     val emails = listOf(
-        EmailItem6("ofertas@oportunidades-seguras.net", "Ganhe dinheiro rápido agora mesmo!", "emailSpamRecebido" ),
-        EmailItem6("contato@ganhadoresfelizes.co", "Parabéns, você ganhou um prêmio!", "emailSpamRecebido2"),
-        EmailItem6("suporte@seguranca-contas.net", "Atualize suas informações de conta agora!", "emailSpamRecebido3"),
-        EmailItem6("vagas@trabalhoemcasa.com", "Ganhe Dinheiro Trabalhando em Casa!", "emailSpamRecebido4"),
-        EmailItem6("descontos@ofertas-imperdiveis.com", "Última Chance! Promoção exclusiva com 50% de desconto", "emailSpamRecebido5")
+        EmailItem6("ofertas@oportunidades-seguras.net", "Ganhe dinheiro rápido agora mesmo!", "emailSpamRecebido/$userGson" ),
+        EmailItem6("contato@ganhadoresfelizes.co", "Parabéns, você ganhou um prêmio!", "emailSpamRecebido2/$userGson"),
+        EmailItem6("suporte@seguranca-contas.net", "Atualize suas informações de conta agora!", "emailSpamRecebido3/$userGson"),
+        EmailItem6("vagas@trabalhoemcasa.com", "Ganhe Dinheiro Trabalhando em Casa!", "emailSpamRecebido4/$userGson"),
+        EmailItem6("descontos@ofertas-imperdiveis.com", "Última Chance! Promoção exclusiva com 50% de desconto", "emailSpamRecebido5/$userGson")
     )
 
     LazyColumn(
@@ -199,7 +210,7 @@ fun EmailItemComponent6(email: EmailItem6, navController: NavController, backSta
             .fillMaxWidth()
             .padding(vertical = 4.dp)
             .clickable {
-                val userJson = gson.toJson(usuario)
+
                 navController.navigate(email.route)
             },
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp),
