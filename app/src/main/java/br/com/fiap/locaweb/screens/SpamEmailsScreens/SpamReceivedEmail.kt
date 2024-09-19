@@ -60,7 +60,6 @@ fun SpamReceivedEmail(controleGeral: NavController, backStackEntry: NavBackStack
     val context = LocalContext.current
     val styles = Style(context)
     val wallpaper = styles.wallpaper()
-    val context = LocalContext.current
     val usuarioRepository = UsuarioRepository(context)
     val userJson = backStackEntry.arguments?.getString("usuario")
     val gson = Gson()

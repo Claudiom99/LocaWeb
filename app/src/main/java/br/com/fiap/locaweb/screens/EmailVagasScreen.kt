@@ -52,7 +52,7 @@ import com.google.gson.Gson
 import br.com.fiap.locaweb.methods.Style
 
 @Composable
-fun EmailScreen4(controleGeral: NavController) {
+fun EmailScreen4(controleGeral: NavController, backStackEntry: NavBackStackEntry) {
 
     val context = LocalContext.current
     val styles = Style(context)

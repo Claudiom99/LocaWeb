@@ -64,7 +64,6 @@ fun NovoEmailScreen(controleGeral: NavController, backStackEntry: NavBackStackEn
             vibrator.vibrate(100)
         }
     }
-    val context = LocalContext.current
     val styles = Style(context)
     val wallpaper = styles.wallpaper()
     val solidColor = styles.solidColors()
